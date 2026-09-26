@@ -1,6 +1,7 @@
 import { FieldsMarquee } from "@/components/landing/fields-marquee";
 import { Hero } from "@/components/landing/hero";
 import { How } from "@/components/landing/how";
+import { Tracking } from "@/components/landing/tracking";
 import { Nav } from "@/components/landing/nav";
 
 export default function Home() {
@@ -12,6 +13,7 @@ export default function Home() {
         <Hero />
         <FieldsMarquee />
         <How />
+        <Tracking />
       </main>
     </>
   );
