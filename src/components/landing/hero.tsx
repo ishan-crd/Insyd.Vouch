@@ -33,7 +33,7 @@ export function Hero() {
           <Link href="/signup" className="btn btn-primary btn-lg">
             Start tracking <ArrowUpRight size={17} className="arrow" />
           </Link>
-          <a href="#api" className="btn btn-ghost btn-lg">
+          <a href="/docs" className="btn btn-ghost btn-lg">
             Read the API docs
           </a>
         </Rise>

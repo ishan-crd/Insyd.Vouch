@@ -3,7 +3,7 @@ import { Logo } from "@/components/logo";
 
 const COLS = [
   { h: "Product", l: [["How it works", "#how"], ["Tracking", "#tracking"], ["Pricing", "#pricing"], ["Dashboard", "/login"]] },
-  { h: "Developers", l: [["API reference", "#api"], ["Response fields", "#api"], ["Webhooks", "#api"]] },
+  { h: "Developers", l: [["API reference", "/docs"], ["Response fields", "/docs#fields"], ["Tracking API", "/docs#track"]] },
   { h: "Company", l: [["Insyd", "https://insyd.in"], ["Contact", "mailto:hello@insyd.in"], ["Terms", "#"], ["Privacy", "#"]] },
 ];
 
