@@ -145,15 +145,18 @@ alter table public.tracked_posts enable row level security;
 alter table public.snapshots enable row level security;
 
 drop policy if exists "own profile" on public.profiles;
-create policy "own profile" on public.profiles for select using (auth.uid() = id);
+create policy "own profile" on public.profiles for select using ((select auth.uid()) = id);
 drop policy if exists "own keys" on public.api_keys;
-create policy "own keys" on public.api_keys for select using (auth.uid() = user_id);
+create policy "own keys" on public.api_keys for select using ((select auth.uid()) = user_id);
 drop policy if exists "own runs" on public.runs;
-create policy "own runs" on public.runs for select using (auth.uid() = user_id);
+create policy "own runs" on public.runs for select using ((select auth.uid()) = user_id);
 drop policy if exists "own items" on public.run_items;
-create policy "own items" on public.run_items for select using (auth.uid() = user_id);
+create policy "own items" on public.run_items for select using ((select auth.uid()) = user_id);
 drop policy if exists "own tracked" on public.tracked_posts;
-create policy "own tracked" on public.tracked_posts for select using (auth.uid() = user_id);
+create policy "own tracked" on public.tracked_posts for select using ((select auth.uid()) = user_id);
 drop policy if exists "own snapshots" on public.snapshots;
-create policy "own snapshots" on public.snapshots for select using (auth.uid() = user_id);
+create policy "own snapshots" on public.snapshots for select using ((select auth.uid()) = user_id);
 -- jobs: no policies, service role only.
+
+-- The signup trigger function is only meant to be called by the trigger itself.
+revoke execute on function public.handle_new_user() from public, anon, authenticated;
