@@ -32,7 +32,7 @@ export type Database = {
       runs: Table<
         {
           cost_usd: number; finished_at: string | null; id: string; input: Json; job_id: string | null; origin: string; result_count: number;
-          started_at: string; status: string; status_message: string | null; targets: string[]; user_id: string;
+          started_at: string; status: string; status_message: string | null; targets: string[]; user_id: string; short_id: string;
         },
         {
           cost_usd?: number; finished_at?: string | null; id?: string; input: Json; job_id?: string | null; origin: string; result_count?: number;

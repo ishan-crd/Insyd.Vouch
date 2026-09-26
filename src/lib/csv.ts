@@ -2,7 +2,13 @@
 export function toCsv(rows: Record<string, unknown>[]): string {
   const cols: string[] = [];
   const seen = new Set<string>();
-  for (const r of rows) for (const k of Object.keys(r)) if (!seen.has(k)) (seen.add(k), cols.push(k));
+  for (const r of rows) {
+    for (const k of Object.keys(r)) {
+      if (seen.has(k)) continue;
+      seen.add(k);
+      cols.push(k);
+    }
+  }
   const cell = (v: unknown) => {
     if (v === null || v === undefined) return "";
     const s = typeof v === "object" ? JSON.stringify(v) : String(v);
