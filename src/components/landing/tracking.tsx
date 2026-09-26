@@ -95,7 +95,7 @@ export function Tracking() {
             </div>
 
             <div className="track-chart">
-              <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" aria-label="Views over 48 hours">
+              <svg viewBox={`0 0 ${W} ${H}`} aria-label="Views over 48 hours">
                 <defs>
                   <linearGradient id="trackArea" x1="0" x2="0" y1="0" y2="1">
                     <stop offset="0" stopColor="#1E54E8" stopOpacity=".2" />

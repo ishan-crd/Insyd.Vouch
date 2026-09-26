@@ -1,5 +1,7 @@
 import { ApiSection } from "@/components/landing/api-section";
 import { Faq } from "@/components/landing/faq";
+import { FinalCta } from "@/components/landing/final-cta";
+import { Footer } from "@/components/landing/footer";
 import { Features } from "@/components/landing/features";
 import { FieldsMarquee } from "@/components/landing/fields-marquee";
 import { Hero } from "@/components/landing/hero";
@@ -24,7 +26,9 @@ export default function Home() {
         <Pricing />
         <UseCases />
         <Faq />
+        <FinalCta />
       </main>
+      <Footer />
     </>
   );
 }
