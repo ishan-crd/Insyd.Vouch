@@ -4,7 +4,9 @@ import { getUpstreamItems, getUpstreamRun, isTerminal, startUpstreamRun, type Up
 import type { Json, RunRow } from "@/lib/database.types";
 import { metricsOf, parseTarget, targetKey, type ScrapedItem, type Target } from "@/lib/instagram";
 import { costFor, MAX_TARGETS_PER_REQUEST, TRACK_INTERVAL_MINUTES } from "@/lib/pricing";
+import { runJson } from "@/lib/serialize";
 import { admin } from "@/lib/supabase/admin";
+import { deliver } from "@/lib/webhooks";
 
 export class InputError extends Error {}
 
@@ -176,7 +178,7 @@ async function finishRun(run: RunRow, items: ScrapedItem[], status: UpstreamStat
         : "Finished with no results. The post may be private, deleted or not a reel."
       : `Run ${finalStatus.toLowerCase()}${upstreamMessage ? `: ${upstreamMessage}` : ""}`;
 
-  await db
+  const { data: finished } = await db
     .from("runs")
     .update({
       status: finalStatus,
@@ -185,16 +187,20 @@ async function finishRun(run: RunRow, items: ScrapedItem[], status: UpstreamStat
       status_message: message,
       finished_at: new Date().toISOString(),
     })
-    .eq("id", run.id);
+    .eq("id", run.id)
+    .select()
+    .single();
 
-  await recordSnapshots(run, items);
+  const snapshots = await recordSnapshots(run, items);
+  if (finished) await deliver(run.user_id, finalStatus === "SUCCEEDED" ? "run.succeeded" : "run.failed", { run: runJson(finished) });
+  if (snapshots.length) await deliver(run.user_id, "snapshots.created", { runId: run.id, snapshots });
 }
 
-/** Every returned post that the user tracks gets a snapshot and refreshed headline numbers. */
+/** Every returned post that the user tracks gets a snapshot and refreshed headline numbers. Returns what was recorded. */
 async function recordSnapshots(run: RunRow, items: ScrapedItem[]) {
   const byCode = new Map<string, ScrapedItem>();
   for (const i of items) if (typeof i.shortCode === "string") byCode.set(i.shortCode, i);
-  if (!byCode.size) return;
+  if (!byCode.size) return [];
 
   const db = admin();
   const { data: tracked } = await db
@@ -203,7 +209,7 @@ async function recordSnapshots(run: RunRow, items: ScrapedItem[]) {
     .eq("user_id", run.user_id)
     .in("status", ["active", "ended"])
     .in("short_code", [...byCode.keys()]);
-  if (!tracked?.length) return;
+  if (!tracked?.length) return [];
 
   const now = new Date().toISOString();
   await db.from("snapshots").insert(
@@ -230,6 +236,7 @@ async function recordSnapshots(run: RunRow, items: ScrapedItem[]) {
         .eq("id", t.id);
     }),
   );
+  return tracked.map((t) => ({ trackedPostId: t.id, shortCode: t.short_code, takenAt: now, ...metricsOf(byCode.get(t.short_code)!) }));
 }
 
 /** Refreshes a run whose job is still open. Used by run pages and the API so results appear without webhooks. */

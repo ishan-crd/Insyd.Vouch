@@ -873,3 +873,11 @@ code { font-family: var(--mono); }
 .docs-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 .docs-pair > div { min-width: 0; }
 @media (max-width: 960px) { .docs-body { grid-template-columns: 1fr; } .docs-toc { display: none; } .docs-pair { grid-template-columns: 1fr; } }
+.form-foot { display: flex; align-items: center; justify-content: flex-end; gap: 12px; }
+.saved { display: inline-flex; align-items: center; gap: 5px; font-size: 13px; color: #0b8a50; font-weight: 550; }
+.webhook-form { display: flex; flex-direction: column; gap: 10px; }
+.secret-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding-top: 12px; border-top: 1px solid var(--line); }
+.secret-row > :first-child { width: 110px; }
+.secret { flex: 1; min-width: 0; font-size: 12.5px; padding: 8px 12px; border-radius: 9px; background: var(--bg); overflow-wrap: anywhere; }
+.secret-row > span:nth-child(2) { flex: 1; }
+.field input:disabled { background: var(--bg); color: var(--muted); }

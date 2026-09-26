@@ -11,7 +11,7 @@ const QA = [
   { q: "What data comes back?", a: "Everything Instagram exposes for the post: views, plays, likes, comments, caption, hashtags, mentions, tagged users, owner, audio, duration, dimensions, media URLs, the latest comments and more. More than 30 fields, same JSON shape every time." },
   { q: "Can I change the 2-hour interval or stop tracking?", a: "Two hours is the default cadence. You can stop tracking any post at any time from the dashboard or with DELETE /v1/track/:id, and set an end date when you start tracking." },
   { q: "Do I need an Instagram account or login?", a: "No. You never share credentials with us. We only read public data." },
-  { q: "How do I pay?", a: "Add a card and top up credit. Usage is metered per result and shown live in your dashboard, with a full log of every run and what it cost." },
+  { q: "How am I billed?", a: "Usage is metered per result and shown live in your console, with a full log of every run and exactly what it cost. Failed runs and empty results are free." },
 ];
 
 export function Faq() {

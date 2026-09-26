@@ -22,8 +22,14 @@ export type Database = {
         }
       >;
       profiles: Table<
-        { company: string | null; created_at: string; email: string; full_name: string | null; id: string },
-        { company?: string | null; created_at?: string; email: string; full_name?: string | null; id: string }
+        {
+          company: string | null; created_at: string; email: string; full_name: string | null; id: string;
+          webhook_url: string | null; webhook_secret: string | null; webhook_last_status: number | null; webhook_last_at: string | null;
+        },
+        {
+          company?: string | null; created_at?: string; email: string; full_name?: string | null; id: string;
+          webhook_url?: string | null; webhook_secret?: string | null; webhook_last_status?: number | null; webhook_last_at?: string | null;
+        }
       >;
       run_items: Table<
         { data: Json; id: number; position: number; run_id: string; short_code: string | null; user_id: string },

@@ -6,6 +6,7 @@ import { generateKey } from "@/lib/api-keys";
 import { requireUser } from "@/lib/auth";
 import { InputError, startScrape } from "@/lib/scrape";
 import { admin } from "@/lib/supabase/admin";
+import { deliver, newWebhookSecret } from "@/lib/webhooks";
 
 export type FormState = { error?: string } | undefined;
 
@@ -82,4 +83,54 @@ export async function revokeApiKey(id: string) {
   const user = await requireUser();
   await admin().from("api_keys").update({ revoked_at: new Date().toISOString() }).eq("id", id).eq("user_id", user.id);
   revalidatePath("/dashboard/api-keys");
+}
+
+const PRIVATE_HOST = /^(localhost|.*\.local|.*\.internal|127\.|10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.|169\.254\.|0\.|\[?::1\]?|\[?f[cd][0-9a-f]{2}:)/i;
+
+export async function updateProfile(_: FormState, form: FormData): Promise<FormState & { saved?: boolean }> {
+  const user = await requireUser();
+  const fullName = String(form.get("fullName") ?? "").trim().slice(0, 80);
+  const company = String(form.get("company") ?? "").trim().slice(0, 80);
+  await admin().from("profiles").update({ full_name: fullName || null, company: company || null }).eq("id", user.id);
+  revalidatePath("/dashboard", "layout");
+  return { saved: true };
+}
+
+export async function saveWebhook(_: FormState, form: FormData): Promise<FormState & { saved?: boolean }> {
+  const user = await requireUser();
+  const raw = String(form.get("url") ?? "").trim();
+  const db = admin();
+  if (!raw) {
+    await db.from("profiles").update({ webhook_url: null }).eq("id", user.id);
+    revalidatePath("/dashboard/settings");
+    return { saved: true };
+  }
+  let url: URL;
+  try {
+    url = new URL(raw);
+  } catch {
+    return { error: "Enter a full URL, like https://example.com/hooks/vouch." };
+  }
+  if (url.protocol !== "https:") return { error: "Webhook URLs must use https." };
+  if (PRIVATE_HOST.test(url.hostname)) return { error: "That host isn't reachable from the internet." };
+
+  const { data: p } = await db.from("profiles").select("webhook_secret").eq("id", user.id).single();
+  await db
+    .from("profiles")
+    .update({ webhook_url: url.toString(), ...(p?.webhook_secret ? {} : { webhook_secret: newWebhookSecret() }) })
+    .eq("id", user.id);
+  revalidatePath("/dashboard/settings");
+  return { saved: true };
+}
+
+export async function rotateWebhookSecret() {
+  const user = await requireUser();
+  await admin().from("profiles").update({ webhook_secret: newWebhookSecret() }).eq("id", user.id);
+  revalidatePath("/dashboard/settings");
+}
+
+export async function sendTestWebhook() {
+  const user = await requireUser();
+  await deliver(user.id, "ping", { message: "Hello from Vouch. Your webhook is wired up." });
+  revalidatePath("/dashboard/settings");
 }

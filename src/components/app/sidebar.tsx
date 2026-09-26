@@ -1,6 +1,6 @@
 "use client";
 
-import { Activity, BarChart3, BookOpen, KeyRound, LayoutGrid, LogOut, Play, Radar } from "lucide-react";
+import { Activity, BarChart3, BookOpen, KeyRound, LayoutGrid, LogOut, Play, Radar, Settings } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LogoMark } from "@/components/logo";
@@ -12,6 +12,7 @@ const NAV = [
   { href: "/dashboard/tracked", label: "Tracked posts", icon: Activity },
   { href: "/dashboard/usage", label: "Usage & billing", icon: BarChart3 },
   { href: "/dashboard/api-keys", label: "API keys", icon: KeyRound },
+  { href: "/dashboard/settings", label: "Settings", icon: Settings },
 ];
 
 export function Sidebar({ name, email, company, spend }: { name: string; email: string; company: string | null; spend: string }) {

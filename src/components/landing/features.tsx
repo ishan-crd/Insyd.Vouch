@@ -48,9 +48,9 @@ export function Features() {
             <h3 className="h3">Webhooks</h3>
             <p>Get a signed POST the moment a snapshot lands or a run fails.</p>
             <div className="events">
-              <div><span className="ev ok">snapshot.created</span><small>2s ago</small></div>
+              <div><span className="ev ok">snapshots.created</span><small>2s ago</small></div>
               <div><span className="ev ok">run.succeeded</span><small>2s ago</small></div>
-              <div><span className="ev">run.started</span><small>50s ago</small></div>
+              <div><span className="ev">run.failed</span><small>3h ago</small></div>
             </div>
           </Reveal>
 
@@ -62,16 +62,16 @@ export function Features() {
 
           <Reveal className="card bento-cell span-2" delay={0.06}>
             <div className="bento-icon"><KeyRound size={18} /></div>
-            <h3 className="h3">Scoped API keys</h3>
-            <p>Separate keys per project or client. Rotate or revoke them in one click.</p>
+            <h3 className="h3">Named API keys</h3>
+            <p>Separate keys per project or client. Revoke any of them in one click.</p>
           </Reveal>
 
           <Reveal className="card bento-cell span-2" delay={0.12}>
             <div className="bento-icon"><Download size={18} /></div>
             <h3 className="h3">Export anything</h3>
-            <p>Any run or any post history as CSV, JSON or Excel, ready for your reports.</p>
+            <p>Any run as CSV or JSON, and every post&apos;s full history over the API, ready for your reports.</p>
             <div className="formats">
-              <span><FileJson size={13} /> JSON</span><span>CSV</span><span>XLSX</span>
+              <span><FileJson size={13} /> JSON</span><span>CSV</span>
             </div>
           </Reveal>
 
@@ -82,9 +82,9 @@ export function Features() {
           </Reveal>
 
           <Reveal className="card bento-cell span-3" delay={0.08}>
-            <h3 className="h3">One schema, forever</h3>
-            <p>Field names are versioned. When Instagram changes something, your integration does not break.</p>
-            <pre className="schema"><span className="tok-c">{"// GET /v1/posts/:id"}</span>{"\n"}<span className="tok-k">&quot;version&quot;</span>: <span className="tok-s">&quot;2026-09-01&quot;</span></pre>
+            <h3 className="h3">Same shape, every time</h3>
+            <p>One-off pulls, tracking snapshots and exports all use the same field names, so your integration code never forks.</p>
+            <pre className="schema"><span className="tok-c">{"// GET /v1/runs/:id/items"}</span>{"\n"}<span className="tok-k">&quot;videoViewCount&quot;</span>: <span className="tok-n">1094600</span></pre>
           </Reveal>
         </div>
 
