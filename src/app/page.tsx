@@ -1,3 +1,4 @@
+import { Features } from "@/components/landing/features";
 import { FieldsMarquee } from "@/components/landing/fields-marquee";
 import { Hero } from "@/components/landing/hero";
 import { How } from "@/components/landing/how";
@@ -14,6 +15,7 @@ export default function Home() {
         <FieldsMarquee />
         <How />
         <Tracking />
+        <Features />
       </main>
     </>
   );
