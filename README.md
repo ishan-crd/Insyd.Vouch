@@ -10,7 +10,7 @@ Next.js 16 (App Router) · Supabase (Auth + Postgres) · upstream scraper: Apify
 ```bash
 pnpm install
 cp .env.example .env.local   # fill in the values below
-pnpm dev --port 3100
+pnpm dev                     # http://localhost:3100
 ```
 
 | Variable | Where it comes from |
@@ -38,3 +38,13 @@ Database schema lives in `supabase/migrations/` (already applied to the linked p
 ## Pricing knobs
 
 `src/lib/pricing.ts`: `PRICE_PER_1K_RESULTS` (4), `SHARES_ADDON_PER_1K` (10), `TRACK_INTERVAL_MINUTES` (120).
+
+## Scripts
+
+| Command | What it does |
+|---|---|
+| `pnpm dev` | Dev server on port 3100 |
+| `pnpm typecheck` | `tsc --noEmit` |
+| `pnpm check` / `pnpm check:fix` | Biome lint + format (fix applies safe fixes) |
+| `pnpm lint` | ESLint (Next.js + React hooks rules) |
+| `pnpm verify` | All of the above, then a production build |
