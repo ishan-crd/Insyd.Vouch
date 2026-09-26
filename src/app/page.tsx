@@ -1,3 +1,4 @@
+import { ApiSection } from "@/components/landing/api-section";
 import { Features } from "@/components/landing/features";
 import { FieldsMarquee } from "@/components/landing/fields-marquee";
 import { Hero } from "@/components/landing/hero";
@@ -16,6 +17,7 @@ export default function Home() {
         <How />
         <Tracking />
         <Features />
+        <ApiSection />
       </main>
     </>
   );

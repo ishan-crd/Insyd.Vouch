@@ -15,15 +15,24 @@ const LINKS = [
 
 export function Nav() {
   const [scrolled, setScrolled] = useState(false);
+  const [dark, setDark] = useState(false);
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 16);
+    const onScroll = () => {
+      setScrolled(window.scrollY > 16);
+      // Flip to dark glass while a navy section sits under the bar.
+      const under = document.querySelectorAll<HTMLElement>("[data-nav-dark]");
+      setDark([...under].some((el) => {
+        const r = el.getBoundingClientRect();
+        return r.top <= 32 && r.bottom >= 32;
+      }));
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   return (
-    <header className={`nav ${scrolled ? "is-scrolled" : ""}`}>
+    <header className={`nav ${scrolled ? "is-scrolled" : ""} ${dark ? "is-dark" : ""}`}>
       <div className="wrap nav-inner">
         <Link href="/" aria-label="Vouch home" className="nav-brand">
           <Logo />
