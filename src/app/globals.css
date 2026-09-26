@@ -271,3 +271,51 @@ code { font-family: var(--mono); }
 .dash-next { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; color: var(--muted); }
 @media (max-width: 1080px) { .dash-tr { grid-template-columns: minmax(160px, 2fr) 1fr 1fr 0.8fr 0.8fr; } .hide-md { display: none; } }
 @media (max-width: 760px) { .dash-body { grid-template-columns: 1fr; } .dash-side { display: none; } .dash-tr { grid-template-columns: minmax(140px, 2fr) 1fr 1fr; } .hide-sm { display: none; } .dash-search { display: none; } }
+
+/* ---------------------------------------------------------------- sections */
+.section { position: relative; padding: clamp(90px, 12vw, 150px) 0; }
+.section-head { display: flex; flex-direction: column; gap: 18px; margin-bottom: 56px; }
+.section-head.center { align-items: center; text-align: center; }
+.section-head.center .h2 { max-width: 18ch; }
+.inline-icon { display: inline; vertical-align: -2px; color: var(--blue); margin-right: 4px; }
+
+/* ---------------------------------------------------------------- marquee */
+.marquee-sec { padding: 70px 0 10px; }
+.marquee-label { text-align: center; font-size: 13.5px; color: var(--muted); margin: 0 0 22px; }
+.marquee { overflow: hidden; mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent); }
+.marquee-track { display: flex; gap: 10px; width: max-content; animation: marquee 60s linear infinite; }
+.marquee:hover .marquee-track { animation-play-state: paused; }
+.marquee-item {
+  display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 16px; border-radius: 999px;
+  background: var(--surface); box-shadow: inset 0 0 0 1px var(--line); font-family: var(--mono); font-size: 13px; color: var(--ink-2);
+}
+.marquee-item .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--blue); opacity: 0.6; }
+
+/* ---------------------------------------------------------------- how */
+.how-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.how-card { position: relative; padding: 26px; display: flex; flex-direction: column; gap: 10px; height: 100%; }
+.how-card p { margin: 0; color: var(--muted); font-size: 15.5px; }
+.how-num { order: 1; font-family: var(--mono); font-size: 12px; color: var(--blue); font-weight: 600; }
+.how-card .h3 { order: 2; }
+.how-card p { order: 3; }
+.how-visual {
+  height: 170px; margin-bottom: 14px; border-radius: 14px; background: var(--bg);
+  box-shadow: inset 0 0 0 1px var(--line); display: flex; flex-direction: column; justify-content: center; gap: 10px; padding: 18px;
+  background-image: radial-gradient(rgba(10, 26, 51, 0.07) 1px, transparent 1px); background-size: 14px 14px;
+}
+.how-input {
+  display: flex; align-items: center; gap: 8px; height: 42px; padding: 0 6px 0 12px; border-radius: 10px; background: #fff;
+  box-shadow: inset 0 0 0 1px rgba(30, 84, 232, 0.4), 0 0 0 4px rgba(30, 84, 232, 0.08); font-family: var(--mono); font-size: 12.5px; color: var(--ink-2);
+}
+.how-input svg { color: var(--blue); }
+.how-input span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.how-input b { font-family: var(--display); font-size: 12px; background: var(--blue); color: #fff; padding: 6px 12px; border-radius: 7px; }
+.how-input.ghost { box-shadow: inset 0 0 0 1px var(--line); opacity: 0.55; }
+.how-timeline { display: flex; align-items: flex-end; justify-content: space-between; height: 100%; padding: 0 6px; }
+.how-tick { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.how-tick .bar { width: 26px; border-radius: 6px; background: linear-gradient(180deg, #b9ccff, #dbe5ff); }
+.how-tick.now .bar { background: linear-gradient(180deg, var(--blue-2), var(--blue)); box-shadow: 0 8px 20px -6px rgba(30, 84, 232, 0.6); }
+.how-tick small { font-family: var(--mono); font-size: 10.5px; color: var(--faint); }
+.how-tick.now small { color: var(--blue); font-weight: 600; }
+.how-json { margin: 0; background: var(--navy); color: #d6def0; border-radius: 10px; padding: 14px 16px; font-size: 12.5px; line-height: 1.7; }
+@media (max-width: 900px) { .how-grid { grid-template-columns: 1fr; } }
