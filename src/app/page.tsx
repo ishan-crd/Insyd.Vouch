@@ -3,6 +3,7 @@ import { Features } from "@/components/landing/features";
 import { FieldsMarquee } from "@/components/landing/fields-marquee";
 import { Hero } from "@/components/landing/hero";
 import { How } from "@/components/landing/how";
+import { Pricing } from "@/components/landing/pricing";
 import { Tracking } from "@/components/landing/tracking";
 import { Nav } from "@/components/landing/nav";
 
@@ -18,6 +19,7 @@ export default function Home() {
         <Tracking />
         <Features />
         <ApiSection />
+        <Pricing />
       </main>
     </>
   );

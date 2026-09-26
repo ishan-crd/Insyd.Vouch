@@ -31,7 +31,7 @@ export function Hero() {
         </Rise>
         <Rise delay={680} className="hero-ctas">
           <Link href="/signup" className="btn btn-primary btn-lg">
-            Start tracking free <ArrowUpRight size={17} className="arrow" />
+            Start tracking <ArrowUpRight size={17} className="arrow" />
           </Link>
           <a href="#api" className="btn btn-ghost btn-lg">
             Read the API docs
