@@ -2,7 +2,7 @@ import "server-only";
 import { z } from "zod";
 import { getUpstreamItems, getUpstreamRun, isTerminal, startUpstreamRun, type UpstreamInput, type UpstreamStatus } from "@/lib/apify";
 import type { Json, RunRow } from "@/lib/database.types";
-import { metricsOf, parseTarget, targetKey, type ScrapedItem, type Target } from "@/lib/instagram";
+import { metricsOf, parseTarget, type ScrapedItem, type Target, targetKey } from "@/lib/instagram";
 import { costFor, MAX_TARGETS_PER_REQUEST, TRACK_INTERVAL_MINUTES } from "@/lib/pricing";
 import { runJson } from "@/lib/serialize";
 import { admin } from "@/lib/supabase/admin";
@@ -42,8 +42,7 @@ function resolveTargets(raw: string[]): Target[] {
   return [...seen.values()];
 }
 
-const runStatusOf = (s: UpstreamStatus): RunRow["status"] =>
-  s === "ABORTING" ? "RUNNING" : s === "TIMING-OUT" ? "RUNNING" : s;
+const runStatusOf = (s: UpstreamStatus): RunRow["status"] => (s === "ABORTING" ? "RUNNING" : s === "TIMING-OUT" ? "RUNNING" : s);
 
 /** Creates a job upstream and a customer run pointing at it. */
 export async function startScrape(userId: string, origin: Origin, req: ScrapeRequest): Promise<RunRow> {
@@ -59,7 +58,11 @@ export async function startScrape(userId: string, origin: Origin, req: ScrapeReq
     includeSharesCount: req.includeSharesCount ?? false,
   };
 
-  const { data: job, error: jobErr } = await db.from("jobs").insert({ kind: "ONE_OFF", input: input as Json }).select().single();
+  const { data: job, error: jobErr } = await db
+    .from("jobs")
+    .insert({ kind: "ONE_OFF", input: input as Json })
+    .select()
+    .single();
   if (jobErr) throw jobErr;
 
   const { data: run, error: runErr } = await db
@@ -100,7 +103,11 @@ export async function startScrape(userId: string, origin: Origin, req: ScrapeReq
     await db.from("jobs").update({ status: "FAILED", status_message: message, processed_at: new Date().toISOString() }).eq("id", job.id);
     const { data } = await db
       .from("runs")
-      .update({ status: "FAILED", status_message: "The scraper could not be started. You were not charged.", finished_at: new Date().toISOString() })
+      .update({
+        status: "FAILED",
+        status_message: "The scraper could not be started. You were not charged.",
+        finished_at: new Date().toISOString(),
+      })
       .eq("id", run.id)
       .select()
       .single();
@@ -121,7 +128,11 @@ export async function processJob(jobId: string): Promise<void> {
   if (!isTerminal(up.status)) {
     if (job.status !== up.status) {
       await db.from("jobs").update({ status: up.status }).eq("id", jobId);
-      await db.from("runs").update({ status: runStatusOf(up.status) }).eq("job_id", jobId).in("status", ["READY", "RUNNING"]);
+      await db
+        .from("runs")
+        .update({ status: runStatusOf(up.status) })
+        .eq("job_id", jobId)
+        .in("status", ["READY", "RUNNING"]);
     }
     return;
   }
@@ -129,7 +140,12 @@ export async function processJob(jobId: string): Promise<void> {
   // Claim the job so only one caller distributes results.
   const { data: claimed } = await db
     .from("jobs")
-    .update({ processed_at: new Date().toISOString(), status: up.status, status_message: up.statusMessage ?? null, finished_at: up.finishedAt ?? new Date().toISOString() })
+    .update({
+      processed_at: new Date().toISOString(),
+      status: up.status,
+      status_message: up.statusMessage ?? null,
+      finished_at: up.finishedAt ?? new Date().toISOString(),
+    })
     .eq("id", jobId)
     .is("processed_at", null)
     .select("id");
@@ -145,7 +161,9 @@ export async function processJob(jobId: string): Promise<void> {
       const mine =
         job.kind === "ONE_OFF"
           ? items
-          : items.filter((i) => targets.has(`post:${i.shortCode}`) || targets.has(`profile:${String(i.ownerUsername ?? "").toLowerCase()}`));
+          : items.filter(
+              (i) => targets.has(`post:${i.shortCode}`) || targets.has(`profile:${String(i.ownerUsername ?? "").toLowerCase()}`),
+            );
       await finishRun(run, mine, up.status, up.statusMessage);
     }
   } catch (e) {
@@ -209,19 +227,26 @@ async function recordSnapshots(run: RunRow, items: ScrapedItem[]) {
     .eq("user_id", run.user_id)
     .in("status", ["active", "ended"])
     .in("short_code", [...byCode.keys()]);
-  if (!tracked?.length) return [];
+  const matches = (tracked ?? []).flatMap((t) => {
+    const item = byCode.get(t.short_code);
+    return item ? [{ t, item }] : [];
+  });
+  if (!matches.length) return [];
 
   const now = new Date().toISOString();
   await db.from("snapshots").insert(
-    tracked.map((t) => {
-      const item = byCode.get(t.short_code)!;
-      return { tracked_post_id: t.id, user_id: run.user_id, run_id: run.id, taken_at: now, ...metricsOf(item), data: item as Json };
-    }),
+    matches.map(({ t, item }) => ({
+      tracked_post_id: t.id,
+      user_id: run.user_id,
+      run_id: run.id,
+      taken_at: now,
+      ...metricsOf(item),
+      data: item as Json,
+    })),
   );
   await Promise.all(
-    tracked.map((t) => {
-      const item = byCode.get(t.short_code)!;
-      return db
+    matches.map(({ t, item }) =>
+      db
         .from("tracked_posts")
         .update({
           ...metricsOf(item),
@@ -233,10 +258,10 @@ async function recordSnapshots(run: RunRow, items: ScrapedItem[]) {
           display_url: item.displayUrl ?? null,
           product_type: item.productType ?? null,
         })
-        .eq("id", t.id);
-    }),
+        .eq("id", t.id),
+    ),
   );
-  return tracked.map((t) => ({ trackedPostId: t.id, shortCode: t.short_code, takenAt: now, ...metricsOf(byCode.get(t.short_code)!) }));
+  return matches.map(({ t, item }) => ({ trackedPostId: t.id, shortCode: t.short_code, takenAt: now, ...metricsOf(item) }));
 }
 
 /** Refreshes a run whose job is still open. Used by run pages and the API so results appear without webhooks. */
@@ -291,7 +316,11 @@ export async function runScheduler() {
 
     const urls = [...new Map(group.map((g) => [g.short_code, g.url])).values()];
     const input: UpstreamInput = { username: urls, resultsLimit: 1, includeSharesCount: withShares };
-    const { data: job, error } = await db.from("jobs").insert({ kind: "SCHEDULE", input: input as Json }).select().single();
+    const { data: job, error } = await db
+      .from("jobs")
+      .insert({ kind: "SCHEDULE", input: input as Json })
+      .select()
+      .single();
     if (error) throw error;
 
     const byUser = new Map<string, typeof group>();
@@ -300,11 +329,17 @@ export async function runScheduler() {
     let started = true;
     try {
       const up = await startUpstreamRun(input);
-      await db.from("jobs").update({ upstream_run_id: up.id, upstream_dataset_id: up.defaultDatasetId, status: up.status }).eq("id", job.id);
+      await db
+        .from("jobs")
+        .update({ upstream_run_id: up.id, upstream_dataset_id: up.defaultDatasetId, status: up.status })
+        .eq("id", job.id);
     } catch (e) {
       started = false;
       console.error("[scheduler] upstream start failed", e);
-      await db.from("jobs").update({ status: "FAILED", status_message: String(e), processed_at: now.toISOString() }).eq("id", job.id);
+      await db
+        .from("jobs")
+        .update({ status: "FAILED", status_message: String(e), processed_at: now.toISOString() })
+        .eq("id", job.id);
     }
 
     if (started) {

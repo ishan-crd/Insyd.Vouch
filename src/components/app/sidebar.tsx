@@ -52,7 +52,7 @@ export function Sidebar({ name, email, company, spend }: { name: string; email: 
           <b>{spend}</b>
         </div>
         <form action="/auth/signout" method="post">
-          <button className="side-signout">
+          <button type="submit" className="side-signout">
             <LogOut size={15} /> Sign out
           </button>
         </form>

@@ -14,24 +14,42 @@ export default async function ApiKeysPage() {
 
   return (
     <>
-      <PageHead title="API keys" sub="Authenticate requests with Authorization: Bearer <key>. Keys never expire until you revoke them." actions={<ApiKeyCreate />} />
+      <PageHead
+        title="API keys"
+        sub="Authenticate requests with Authorization: Bearer <key>. Keys never expire until you revoke them."
+        actions={<ApiKeyCreate />}
+      />
 
       {!active.length ? (
-        <Empty icon={<KeyRound size={20} />} title="No active keys">Create a key to call the Vouch API from your code.</Empty>
+        <Empty icon={<KeyRound size={20} />} title="No active keys">
+          Create a key to call the Vouch API from your code.
+        </Empty>
       ) : (
         <div className="table-card">
           <table className="table">
-            <thead><tr><th>Name</th><th>Key</th><th>Created</th><th>Last used</th><th /></tr></thead>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Key</th>
+                <th>Created</th>
+                <th>Last used</th>
+                <th />
+              </tr>
+            </thead>
             <tbody>
               {active.map((k) => (
                 <tr key={k.id}>
-                  <td><b>{k.name}</b></td>
+                  <td>
+                    <b>{k.name}</b>
+                  </td>
                   <td className="mono-sm">{k.prefix}••••••••••••</td>
                   <td className="nowrap">{dateTime(k.created_at)}</td>
                   <td className="nowrap muted-sm">{k.last_used_at ? relative(k.last_used_at) : "Never"}</td>
                   <td className="r">
                     <form action={revokeApiKey.bind(null, k.id)}>
-                      <button className="btn btn-ghost btn-sm danger">Revoke</button>
+                      <button type="submit" className="btn btn-ghost btn-sm danger">
+                        Revoke
+                      </button>
                     </form>
                   </td>
                 </tr>
@@ -42,7 +60,9 @@ export default async function ApiKeysPage() {
       )}
 
       <section className="panel quickstart">
-        <div className="panel-head"><h2>Quickstart</h2></div>
+        <div className="panel-head">
+          <h2>Quickstart</h2>
+        </div>
         <pre className="code-block">{`curl -X POST https://api.vouch.dev/v1/scrape?wait=60 \\
   -H "Authorization: Bearer $VOUCH_KEY" \\
   -H "Content-Type: application/json" \\
@@ -51,10 +71,16 @@ export default async function ApiKeysPage() {
 
       {revoked.length > 0 && (
         <details className="revoked">
-          <summary>{revoked.length} revoked {revoked.length === 1 ? "key" : "keys"}</summary>
+          <summary>
+            {revoked.length} revoked {revoked.length === 1 ? "key" : "keys"}
+          </summary>
           <ul>
             {revoked.map((k) => (
-              <li key={k.id}><span>{k.name}</span><span className="mono-sm">{k.prefix}…</span><span className="muted-sm">revoked {relative(k.revoked_at)}</span></li>
+              <li key={k.id}>
+                <span>{k.name}</span>
+                <span className="mono-sm">{k.prefix}…</span>
+                <span className="muted-sm">revoked {relative(k.revoked_at)}</span>
+              </li>
             ))}
           </ul>
         </details>

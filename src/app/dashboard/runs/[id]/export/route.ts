@@ -13,7 +13,12 @@ export async function GET(request: Request, ctx: RouteContext<"/dashboard/runs/[
 
   const items: Record<string, unknown>[] = [];
   for (let from = 0; ; from += 1000) {
-    const { data } = await db.from("run_items").select("data").eq("run_id", id).order("position").range(from, from + 999);
+    const { data } = await db
+      .from("run_items")
+      .select("data")
+      .eq("run_id", id)
+      .order("position")
+      .range(from, from + 999);
     items.push(...(data ?? []).map((r) => r.data as Record<string, unknown>));
     if (!data || data.length < 1000) break;
   }

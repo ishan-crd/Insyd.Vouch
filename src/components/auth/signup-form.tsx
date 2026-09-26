@@ -18,14 +18,18 @@ export function SignupForm() {
   return (
     <form action={action} className="auth-form">
       <GoogleButton />
-      <div className="auth-divider"><span>or with email</span></div>
+      <div className="auth-divider">
+        <span>or with email</span>
+      </div>
       <div className="field-row">
         <label className="field">
           <span>Full name</span>
           <input name="fullName" autoComplete="name" required placeholder="Ada Lovelace" />
         </label>
         <label className="field">
-          <span>Company <em>optional</em></span>
+          <span>
+            Company <em>optional</em>
+          </span>
           <input name="company" autoComplete="organization" placeholder="Acme Social" />
         </label>
       </div>
@@ -38,7 +42,7 @@ export function SignupForm() {
         <input name="password" type="password" autoComplete="new-password" required minLength={8} placeholder="At least 8 characters" />
       </label>
       {state?.error && <p className="auth-error">{state.error}</p>}
-      <button className="btn btn-primary btn-lg auth-submit" disabled={pending}>
+      <button type="submit" className="btn btn-primary btn-lg auth-submit" disabled={pending}>
         {pending ? "Creating account…" : "Create account"} <ArrowRight size={17} />
       </button>
     </form>

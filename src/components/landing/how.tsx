@@ -13,8 +13,7 @@ export function How() {
             Three steps. <span className="serif blue">Zero scrapers</span> to babysit.
           </h2>
           <p className="lede">
-            You bring the links. We handle proxies, rate limits, retries and schema changes, so the numbers just keep
-            showing up.
+            You bring the links. We handle proxies, rate limits, retries and schema changes, so the numbers just keep showing up.
           </p>
         </Reveal>
 
@@ -59,10 +58,12 @@ export function How() {
             <div className="how-visual">
               <pre className="how-json">
                 <span className="tok-p">{"{"}</span>
-                {"\n  "}<span className="tok-k">&quot;videoViewCount&quot;</span>: <span className="tok-n">1284310</span>,
-                {"\n  "}<span className="tok-k">&quot;likesCount&quot;</span>: <span className="tok-n">96402</span>,
-                {"\n  "}<span className="tok-k">&quot;commentsCount&quot;</span>: <span className="tok-n">1873</span>
-                {"\n"}<span className="tok-p">{"}"}</span>
+                {"\n  "}
+                <span className="tok-k">&quot;videoViewCount&quot;</span>: <span className="tok-n">1284310</span>,{"\n  "}
+                <span className="tok-k">&quot;likesCount&quot;</span>: <span className="tok-n">96402</span>,{"\n  "}
+                <span className="tok-k">&quot;commentsCount&quot;</span>: <span className="tok-n">1873</span>
+                {"\n"}
+                <span className="tok-p">{"}"}</span>
               </pre>
             </div>
             <h3 className="h3">

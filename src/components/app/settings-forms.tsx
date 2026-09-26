@@ -9,13 +9,28 @@ export function ProfileForm({ fullName, company, email }: { fullName: string; co
   return (
     <form action={action} className="panel-body">
       <div className="grid-2">
-        <label className="field"><span>Full name</span><input name="fullName" defaultValue={fullName} /></label>
-        <label className="field"><span>Company</span><input name="company" defaultValue={company} /></label>
+        <label className="field">
+          <span>Full name</span>
+          <input name="fullName" defaultValue={fullName} />
+        </label>
+        <label className="field">
+          <span>Company</span>
+          <input name="company" defaultValue={company} />
+        </label>
       </div>
-      <label className="field"><span>Email</span><input value={email} disabled /></label>
+      <label className="field">
+        <span>Email</span>
+        <input value={email} disabled />
+      </label>
       <div className="form-foot">
-        {state?.saved && !pending && <span className="saved"><Check size={14} /> Saved</span>}
-        <button className="btn btn-primary btn-sm" disabled={pending}>{pending ? "Saving…" : "Save"}</button>
+        {state?.saved && !pending && (
+          <span className="saved">
+            <Check size={14} /> Saved
+          </span>
+        )}
+        <button type="submit" className="btn btn-primary btn-sm" disabled={pending}>
+          {pending ? "Saving…" : "Save"}
+        </button>
       </div>
     </form>
   );
@@ -31,8 +46,14 @@ export function WebhookForm({ url }: { url: string }) {
       </label>
       <div className="form-foot">
         {state?.error && <span className="form-err">{state.error}</span>}
-        {state?.saved && !pending && <span className="saved"><Check size={14} /> Saved</span>}
-        <button className="btn btn-primary btn-sm" disabled={pending}>{pending ? "Saving…" : "Save endpoint"}</button>
+        {state?.saved && !pending && (
+          <span className="saved">
+            <Check size={14} /> Saved
+          </span>
+        )}
+        <button type="submit" className="btn btn-primary btn-sm" disabled={pending}>
+          {pending ? "Saving…" : "Save endpoint"}
+        </button>
       </div>
     </form>
   );

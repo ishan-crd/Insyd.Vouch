@@ -50,7 +50,9 @@ export function Pricing() {
             <p className="price-sub">That&apos;s $0.004 per post fetch. Tracking one post for a full day costs under five cents.</p>
             <ul className="price-list">
               {INCLUDED.map((i) => (
-                <li key={i}><Check size={15} strokeWidth={2.6} /> {i}</li>
+                <li key={i}>
+                  <Check size={15} strokeWidth={2.6} /> {i}
+                </li>
               ))}
             </ul>
             <Link href="/signup" className="btn btn-primary btn-lg price-cta">
@@ -61,13 +63,32 @@ export function Pricing() {
           <Reveal className="card calc" delay={0.1}>
             <h3 className="h3">Estimate your bill</h3>
             <Slider label="Posts you track" value={posts} min={0} max={2000} step={10} onChange={setPosts} display={fmt(posts)} />
-            <Slider label="Days you track each post" value={days} min={1} max={30} step={1} onChange={setDays} display={`${days} ${days === 1 ? "day" : "days"}`} />
+            <Slider
+              label="Days you track each post"
+              value={days}
+              min={1}
+              max={30}
+              step={1}
+              onChange={setDays}
+              display={`${days} ${days === 1 ? "day" : "days"}`}
+            />
             <Slider label="One-off fetches" value={oneOff} min={0} max={50000} step={500} onChange={setOneOff} display={fmt(oneOff)} />
 
             <div className="calc-math mono">
-              <div><span>{fmt(posts)} posts × {days}d × 12 checks</span><span>{fmt(tracked)}</span></div>
-              <div><span>one-off fetches</span><span>{fmt(oneOff)}</span></div>
-              <div className="calc-total-row"><span>results</span><span>{fmt(results)}</span></div>
+              <div>
+                <span>
+                  {fmt(posts)} posts × {days}d × 12 checks
+                </span>
+                <span>{fmt(tracked)}</span>
+              </div>
+              <div>
+                <span>one-off fetches</span>
+                <span>{fmt(oneOff)}</span>
+              </div>
+              <div className="calc-total-row">
+                <span>results</span>
+                <span>{fmt(results)}</span>
+              </div>
             </div>
             <div className="calc-total">
               <span>Estimated cost</span>
@@ -84,7 +105,15 @@ export function Pricing() {
   );
 }
 
-function Slider(props: { label: string; value: number; min: number; max: number; step: number; display: string; onChange: (v: number) => void }) {
+function Slider(props: {
+  label: string;
+  value: number;
+  min: number;
+  max: number;
+  step: number;
+  display: string;
+  onChange: (v: number) => void;
+}) {
   const pct = ((props.value - props.min) / (props.max - props.min)) * 100;
   return (
     <label className="slider">

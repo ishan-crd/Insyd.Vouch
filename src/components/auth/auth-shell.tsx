@@ -10,11 +10,23 @@ const SAMPLE = `{
   "tracking": { "interval": "2h" }
 }`;
 
-export function AuthShell({ title, subtitle, children, footer }: { title: ReactNode; subtitle: string; children: ReactNode; footer: ReactNode }) {
+export function AuthShell({
+  title,
+  subtitle,
+  children,
+  footer,
+}: {
+  title: ReactNode;
+  subtitle: string;
+  children: ReactNode;
+  footer: ReactNode;
+}) {
   return (
     <div className="auth">
       <div className="auth-form-side">
-        <Link href="/" className="auth-logo"><Logo /></Link>
+        <Link href="/" className="auth-logo">
+          <Logo />
+        </Link>
         <div className="auth-form-wrap">
           <h1 className="auth-title">{title}</h1>
           <p className="auth-sub">{subtitle}</p>
@@ -30,7 +42,12 @@ export function AuthShell({ title, subtitle, children, footer }: { title: ReactN
             Every view, like and share. <span className="serif">Vouched for.</span>
           </p>
           <div className="terminal auth-code">
-            <div className="window-bar"><i /><i /><i /><span className="url">GET /v1/runs/run_8fK2/items</span></div>
+            <div className="window-bar">
+              <i />
+              <i />
+              <i />
+              <span className="url">GET /v1/runs/run_8fK2/items</span>
+            </div>
             <pre>{SAMPLE}</pre>
           </div>
           <ul className="auth-points">

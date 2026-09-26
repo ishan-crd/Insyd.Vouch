@@ -12,4 +12,9 @@ export function costFor(results: number, includeShares: boolean) {
 }
 
 export const usd = (n: number, digits = 2) =>
-  n.toLocaleString("en-US", { style: "currency", currency: "USD", minimumFractionDigits: digits, maximumFractionDigits: Math.max(digits, 3) });
+  n.toLocaleString("en-US", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: digits,
+    maximumFractionDigits: Math.max(digits, 3),
+  });

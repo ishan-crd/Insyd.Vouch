@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter_Tight, Instrument_Serif, JetBrains_Mono } from "next/font/google";
+import { Instrument_Serif, Inter_Tight, JetBrains_Mono } from "next/font/google";
 import { SmoothScroll } from "@/components/smooth-scroll";
 import "./globals.css";
 

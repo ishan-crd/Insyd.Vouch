@@ -46,7 +46,12 @@ export default async function RunsPage({ searchParams }: PageProps<"/dashboard/r
   const total = count ?? 0;
   const pages = Math.max(1, Math.ceil(total / PER_PAGE));
   const href = (p: Record<string, string | number>) => {
-    const s = new URLSearchParams({ ...(status && { status }), ...(origin && { origin }), ...(search && { q: search }), ...Object.fromEntries(Object.entries(p).map(([k, v]) => [k, String(v)])) });
+    const s = new URLSearchParams({
+      ...(status && { status }),
+      ...(origin && { origin }),
+      ...(search && { q: search }),
+      ...Object.fromEntries(Object.entries(p).map(([k, v]) => [k, String(v)])),
+    });
     for (const [k, v] of [...s.entries()]) if (!v) s.delete(k);
     return `/dashboard/runs${s.size ? `?${s}` : ""}`;
   };
@@ -57,7 +62,11 @@ export default async function RunsPage({ searchParams }: PageProps<"/dashboard/r
       <PageHead
         title="Runs"
         sub="Every pull you've made from the console, the API or the tracking schedule."
-        actions={<Link href="/dashboard/scrape" className="btn btn-primary"><Plus size={16} /> New scrape</Link>}
+        actions={
+          <Link href="/dashboard/scrape" className="btn btn-primary">
+            <Plus size={16} /> New scrape
+          </Link>
+        }
       />
 
       <div className="toolbar">
@@ -69,22 +78,32 @@ export default async function RunsPage({ searchParams }: PageProps<"/dashboard/r
         </form>
         <div className="seg">
           {FILTERS.map((f) => (
-            <Link key={f.v} href={href({ status: f.v, page: 1 })} className={status === f.v ? "on" : ""}>{f.label}</Link>
+            <Link key={f.v} href={href({ status: f.v, page: 1 })} className={status === f.v ? "on" : ""}>
+              {f.label}
+            </Link>
           ))}
         </div>
         <div className="seg">
           {ORIGINS.map((f) => (
-            <Link key={f.v} href={href({ origin: f.v, page: 1 })} className={origin === f.v ? "on" : ""}>{f.label}</Link>
+            <Link key={f.v} href={href({ origin: f.v, page: 1 })} className={origin === f.v ? "on" : ""}>
+              {f.label}
+            </Link>
           ))}
         </div>
-        <span className="toolbar-count">{total.toLocaleString()} {total === 1 ? "run" : "runs"}</span>
+        <span className="toolbar-count">
+          {total.toLocaleString()} {total === 1 ? "run" : "runs"}
+        </span>
       </div>
 
       {runs.length === 0 ? (
         <Empty
           icon={<Play size={20} />}
           title={search || status || origin ? "No runs match" : "No runs yet"}
-          action={<Link href="/dashboard/scrape" className="btn btn-primary">Start your first scrape</Link>}
+          action={
+            <Link href="/dashboard/scrape" className="btn btn-primary">
+              Start your first scrape
+            </Link>
+          }
         >
           {search || status || origin ? "Try clearing the filters." : "Paste a reel link and hit Start. Every run you make shows up here."}
         </Empty>
@@ -113,21 +132,33 @@ export default async function RunsPage({ searchParams }: PageProps<"/dashboard/r
                     </Link>
                   </td>
                   <td className="mono-sm ellip">{inputSummary(r.input)}</td>
-                  <td className="r"><Link href={`/dashboard/runs/${r.id}`} className="blue num">{r.result_count.toLocaleString()}</Link></td>
+                  <td className="r">
+                    <Link href={`/dashboard/runs/${r.id}`} className="blue num">
+                      {r.result_count.toLocaleString()}
+                    </Link>
+                  </td>
                   <td className="r num">{usd(Number(r.cost_usd))}</td>
                   <td className="nowrap">{dateTime(r.started_at)}</td>
                   <td className="nowrap">{dateTime(r.finished_at)}</td>
                   <td className="r nowrap">{duration(durationSecs(r))}</td>
-                  <td><OriginTag origin={r.origin} /></td>
+                  <td>
+                    <OriginTag origin={r.origin} />
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
           <div className="table-foot">
-            <span>Page {page} of {pages}</span>
+            <span>
+              Page {page} of {pages}
+            </span>
             <div className="pager">
-              <Link aria-disabled={page <= 1} className={page <= 1 ? "off" : ""} href={href({ page: page - 1 })}><ChevronLeft size={16} /></Link>
-              <Link aria-disabled={page >= pages} className={page >= pages ? "off" : ""} href={href({ page: page + 1 })}><ChevronRight size={16} /></Link>
+              <Link aria-disabled={page <= 1} className={page <= 1 ? "off" : ""} href={href({ page: page - 1 })}>
+                <ChevronLeft size={16} />
+              </Link>
+              <Link aria-disabled={page >= pages} className={page >= pages ? "off" : ""} href={href({ page: page + 1 })}>
+                <ChevronRight size={16} />
+              </Link>
             </div>
           </div>
         </div>

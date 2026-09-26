@@ -8,9 +8,17 @@ export const metadata: Metadata = { title: "Create your account — Vouch" };
 export default function SignupPage() {
   return (
     <AuthShell
-      title={<>Start <span className="serif blue">vouching.</span></>}
+      title={
+        <>
+          Start <span className="serif blue">vouching.</span>
+        </>
+      }
       subtitle="Create an account, grab an API key and track your first post in a minute."
-      footer={<>Already have an account? <Link href="/login">Sign in</Link></>}
+      footer={
+        <>
+          Already have an account? <Link href="/login">Sign in</Link>
+        </>
+      }
     >
       <SignupForm />
     </AuthShell>

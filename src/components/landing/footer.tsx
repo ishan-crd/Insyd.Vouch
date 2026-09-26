@@ -2,9 +2,32 @@ import Link from "next/link";
 import { Logo } from "@/components/logo";
 
 const COLS = [
-  { h: "Product", l: [["How it works", "#how"], ["Tracking", "#tracking"], ["Pricing", "#pricing"], ["Dashboard", "/login"]] },
-  { h: "Developers", l: [["API reference", "/docs"], ["Response fields", "/docs#fields"], ["Tracking API", "/docs#track"]] },
-  { h: "Company", l: [["Insyd", "https://insyd.in"], ["Contact", "mailto:hello@insyd.in"], ["Terms", "#"], ["Privacy", "#"]] },
+  {
+    h: "Product",
+    l: [
+      ["How it works", "#how"],
+      ["Tracking", "#tracking"],
+      ["Pricing", "#pricing"],
+      ["Dashboard", "/login"],
+    ],
+  },
+  {
+    h: "Developers",
+    l: [
+      ["API reference", "/docs"],
+      ["Response fields", "/docs#fields"],
+      ["Tracking API", "/docs#track"],
+    ],
+  },
+  {
+    h: "Company",
+    l: [
+      ["Insyd", "https://insyd.in"],
+      ["Contact", "mailto:hello@insyd.in"],
+      ["Terms", "#"],
+      ["Privacy", "#"],
+    ],
+  },
 ];
 
 export function Footer() {
@@ -20,7 +43,9 @@ export function Footer() {
             <div key={c.h} className="footer-col">
               <h4>{c.h}</h4>
               {c.l.map(([label, href]) => (
-                <Link key={label} href={href}>{label}</Link>
+                <Link key={label} href={href}>
+                  {label}
+                </Link>
               ))}
             </div>
           ))}
@@ -30,7 +55,9 @@ export function Footer() {
           <span>Not affiliated with Instagram or Meta.</span>
         </div>
       </div>
-      <div className="footer-word" aria-hidden>vouch</div>
+      <div className="footer-word" aria-hidden>
+        vouch
+      </div>
     </footer>
   );
 }

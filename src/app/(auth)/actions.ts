@@ -17,7 +17,9 @@ export async function signIn(_: AuthState, form: FormData): Promise<AuthState> {
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithPassword({ email, password });
   if (error) {
-    const msg = /confirm/i.test(error.message) ? "Confirm your email first. Check your inbox for the link." : "That email and password don't match.";
+    const msg = /confirm/i.test(error.message)
+      ? "Confirm your email first. Check your inbox for the link."
+      : "That email and password don't match.";
     return { error: msg, email };
   }
   redirect(safeNext(form.get("next")));

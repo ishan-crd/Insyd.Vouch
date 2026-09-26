@@ -29,14 +29,19 @@ function SetupNotice({ missing }: { missing: string[] }) {
       <div className="panel setup-card">
         <div className="panel-body">
           <h1>Almost there</h1>
-          <p className="muted-sm">You&apos;re signed in. The console needs these server keys in <code>.env.local</code>, then a dev-server restart:</p>
+          <p className="muted-sm">
+            You&apos;re signed in. The console needs these server keys in <code>.env.local</code>, then a dev-server restart:
+          </p>
           <ul>
             {missing.map((k) => (
-              <li key={k}><code>{k}</code></li>
+              <li key={k}>
+                <code>{k}</code>
+              </li>
             ))}
           </ul>
           <p className="muted-sm">
-            <b>SUPABASE_SECRET_KEY</b>: Supabase dashboard → Project settings → API keys → Secret keys → reveal the <code>sb_secret_…</code> key.
+            <b>SUPABASE_SECRET_KEY</b>: Supabase dashboard → Project settings → API keys → Secret keys → reveal the <code>sb_secret_…</code>{" "}
+            key.
             <br />
             <b>APIFY_TOKEN</b>: console.apify.com → Settings → API &amp; Integrations.
           </p>

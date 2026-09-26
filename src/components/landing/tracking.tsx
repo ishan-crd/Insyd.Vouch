@@ -1,23 +1,36 @@
 "use client";
 
-import { motion, useMotionValueEvent, useScroll, useTransform } from "motion/react";
 import { Heart, MessageCircle, Play, Repeat2 } from "lucide-react";
+import { motion, useMotionValueEvent, useScroll, useTransform } from "motion/react";
 import { useRef, useState } from "react";
 
 // Views of one reel, sampled every two hours for 48 hours.
-const VIEWS = [0, 8_400, 31_200, 74_900, 141_000, 228_500, 322_000, 418_700, 506_300, 590_100, 661_800, 724_400, 781_000,
-  829_600, 872_300, 910_900, 944_000, 973_200, 998_500, 1_020_400, 1_039_800, 1_056_900, 1_071_300, 1_083_900, 1_094_600];
+const VIEWS = [
+  0, 8_400, 31_200, 74_900, 141_000, 228_500, 322_000, 418_700, 506_300, 590_100, 661_800, 724_400, 781_000, 829_600, 872_300, 910_900,
+  944_000, 973_200, 998_500, 1_020_400, 1_039_800, 1_056_900, 1_071_300, 1_083_900, 1_094_600,
+];
 
-const W = 560, H = 240, PAD = 8;
+const W = 560,
+  H = 240,
+  PAD = 8;
 const MAX = VIEWS[VIEWS.length - 1];
 const pt = (v: number, i: number) => [PAD + (i / (VIEWS.length - 1)) * (W - PAD * 2), H - PAD - (v / MAX) * (H - PAD * 2 - 20)] as const;
 const LINE = VIEWS.map((v, i) => `${i ? "L" : "M"}${pt(v, i).join(",")}`).join(" ");
 const AREA = `${LINE} L${W - PAD},${H} L${PAD},${H} Z`;
 
 const STEPS = [
-  { t: "Snapshot one, the moment you add it", d: "The first pull captures every field: views, plays, likes, comments, caption, audio, owner and more." },
-  { t: "Then every two hours, automatically", d: "Our scheduler re-runs the post on a fixed cadence. No cron jobs on your side, no missed windows." },
-  { t: "A growth curve you can act on", d: "Spot the reels that are still climbing, pay creators on verified numbers, and prove campaign reach." },
+  {
+    t: "Snapshot one, the moment you add it",
+    d: "The first pull captures every field: views, plays, likes, comments, caption, audio, owner and more.",
+  },
+  {
+    t: "Then every two hours, automatically",
+    d: "Our scheduler re-runs the post on a fixed cadence. No cron jobs on your side, no missed windows.",
+  },
+  {
+    t: "A growth curve you can act on",
+    d: "Spot the reels that are still climbing, pay creators on verified numbers, and prove campaign reach.",
+  },
 ];
 
 const fmt = (n: number) => n.toLocaleString("en-US");
@@ -67,12 +80,16 @@ export function Tracking() {
         <div className="track-stage">
           <div className="card track-card">
             <div className="track-post">
-              <i><Play size={14} fill="#fff" stroke="none" /></i>
+              <i>
+                <Play size={14} fill="#fff" stroke="none" />
+              </i>
               <div>
                 <b>@nomad.eats</b>
                 <small>instagram.com/reel/C8xQ2Lm…</small>
               </div>
-              <span className="track-live"><span className="live-dot" /> Tracking</span>
+              <span className="track-live">
+                <span className="live-dot" /> Tracking
+              </span>
             </div>
 
             <div className="track-kpis">
@@ -81,15 +98,21 @@ export function Tracking() {
                 <b className="num">{fmt(views)}</b>
               </div>
               <div>
-                <small><Heart size={12} /> Likes</small>
+                <small>
+                  <Heart size={12} /> Likes
+                </small>
                 <b className="num">{fmt(Math.round(views * 0.072))}</b>
               </div>
               <div>
-                <small><MessageCircle size={12} /> Comments</small>
+                <small>
+                  <MessageCircle size={12} /> Comments
+                </small>
                 <b className="num">{fmt(Math.round(views * 0.0018))}</b>
               </div>
               <div>
-                <small><Repeat2 size={12} /> Shares</small>
+                <small>
+                  <Repeat2 size={12} /> Shares
+                </small>
                 <b className="num">{fmt(Math.round(views * 0.0137))}</b>
               </div>
             </div>
@@ -114,7 +137,11 @@ export function Tracking() {
                 <circle cx={dx} cy={dy} r="4.5" fill="#fff" stroke="#1E54E8" strokeWidth="2.4" />
               </svg>
               <div className="track-axis">
-                <span>0h</span><span>12h</span><span>24h</span><span>36h</span><span>48h</span>
+                <span>0h</span>
+                <span>12h</span>
+                <span>24h</span>
+                <span>36h</span>
+                <span>48h</span>
               </div>
             </div>
 
@@ -128,9 +155,7 @@ export function Tracking() {
                 </div>
               ))}
             </div>
-            <div className="track-foot mono">
-              {hours}h tracked · next check in 2h
-            </div>
+            <div className="track-foot mono">{hours}h tracked · next check in 2h</div>
           </div>
         </div>
       </div>

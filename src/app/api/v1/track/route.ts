@@ -22,7 +22,10 @@ export async function POST(request: Request) {
       .from("tracked_posts")
       .select()
       .eq("user_id", userId)
-      .in("short_code", run.targets.filter((t) => t.startsWith("post:")).map((t) => t.slice(5)));
+      .in(
+        "short_code",
+        run.targets.filter((t) => t.startsWith("post:")).map((t) => t.slice(5)),
+      );
     return ok({ run: runJson(run), tracked: (data ?? []).map(trackedJson) }, 201);
   } catch (e) {
     return handleError(e);
@@ -36,7 +39,8 @@ export async function GET(request: Request) {
   try {
     const q = new URL(request.url).searchParams;
     let query = admin().from("tracked_posts").select().eq("user_id", userId);
-    if (q.get("status")) query = query.eq("status", q.get("status")!);
+    const status = q.get("status");
+    if (status) query = query.eq("status", status);
     const { data, error } = await query.order("created_at", { ascending: false }).limit(1000);
     if (error) throw error;
     return ok({ tracked: (data ?? []).map(trackedJson) });

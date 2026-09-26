@@ -1,17 +1,19 @@
 import { createServerClient } from "@supabase/ssr";
-import { NextResponse, type NextRequest } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
+import { publicSupabaseEnv } from "@/lib/supabase/public-env";
 
 // Refreshes the Supabase session cookie on every page request and keeps signed-out visitors out of the dashboard.
 export async function proxy(request: NextRequest) {
   let response = NextResponse.next({ request });
+  const { url, publishableKey } = publicSupabaseEnv();
 
-  const supabase = createServerClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!, {
+  const supabase = createServerClient(url, publishableKey, {
     cookies: {
       getAll: () => request.cookies.getAll(),
       setAll: (toSet) => {
-        toSet.forEach(({ name, value }) => request.cookies.set(name, value));
+        for (const { name, value } of toSet) request.cookies.set(name, value);
         response = NextResponse.next({ request });
-        toSet.forEach(({ name, value, options }) => response.cookies.set(name, value, options));
+        for (const { name, value, options } of toSet) response.cookies.set(name, value, options);
       },
     },
   });

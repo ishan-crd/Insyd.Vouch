@@ -18,7 +18,12 @@ export async function GET(request: Request, ctx: RouteContext<"/api/v1/runs/[id]
     const q = new URL(request.url).searchParams;
     const limit = Math.min(5000, Math.max(1, Number(q.get("limit") ?? 1000) || 1000));
     const offset = Math.max(0, Number(q.get("offset") ?? 0) || 0);
-    const { data, error } = await db.from("run_items").select("data").eq("run_id", id).order("position").range(offset, offset + limit - 1);
+    const { data, error } = await db
+      .from("run_items")
+      .select("data")
+      .eq("run_id", id)
+      .order("position")
+      .range(offset, offset + limit - 1);
     if (error) throw error;
     const items = (data ?? []).map((r) => r.data as Record<string, unknown>);
 

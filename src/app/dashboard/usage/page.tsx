@@ -12,7 +12,12 @@ export default async function UsagePage() {
 
   const days = Array.from({ length: 30 }, (_, i) => {
     const d = new Date(start30.getTime() + i * 86_400_000);
-    return { key: d.toISOString().slice(0, 10), label: d.toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "UTC" }), cost: 0, results: 0 };
+    return {
+      key: d.toISOString().slice(0, 10),
+      label: d.toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "UTC" }),
+      cost: 0,
+      results: 0,
+    };
   });
   const byDay = new Map(days.map((d) => [d.key, d]));
   for (const r of last30.rows) {
@@ -35,26 +40,46 @@ export default async function UsagePage() {
       </div>
 
       <section className="panel">
-        <div className="panel-head"><h2>Daily spend</h2><span className="muted-sm">Last 30 days</span></div>
+        <div className="panel-head">
+          <h2>Daily spend</h2>
+          <span className="muted-sm">Last 30 days</span>
+        </div>
         <div className="panel-body">
           <BarChart label="Spend" bars={days.map((d) => ({ label: d.label, v: Math.round(d.cost * 100) / 100 }))} unit="usd" />
         </div>
       </section>
 
       <section className="panel">
-        <div className="panel-head"><h2>Daily results</h2><span className="muted-sm">Last 30 days</span></div>
+        <div className="panel-head">
+          <h2>Daily results</h2>
+          <span className="muted-sm">Last 30 days</span>
+        </div>
         <div className="panel-body">
           <BarChart label="Results" bars={days.map((d) => ({ label: d.label, v: d.results }))} />
         </div>
       </section>
 
       <section className="panel">
-        <div className="panel-head"><h2>Rates</h2></div>
+        <div className="panel-head">
+          <h2>Rates</h2>
+        </div>
         <div className="panel-body rates">
-          <div><span>Results (any post, reel or profile item)</span><b>{usd(PRICE_PER_1K_RESULTS)} / 1,000</b></div>
-          <div><span>Shares count add-on</span><b>+{usd(SHARES_ADDON_PER_1K)} / 1,000</b></div>
-          <div><span>Tracking check (every 2 hours)</span><b>1 result each</b></div>
-          <div><span>Failed runs or empty results</span><b>Free</b></div>
+          <div>
+            <span>Results (any post, reel or profile item)</span>
+            <b>{usd(PRICE_PER_1K_RESULTS)} / 1,000</b>
+          </div>
+          <div>
+            <span>Shares count add-on</span>
+            <b>+{usd(SHARES_ADDON_PER_1K)} / 1,000</b>
+          </div>
+          <div>
+            <span>Tracking check (every 2 hours)</span>
+            <b>1 result each</b>
+          </div>
+          <div>
+            <span>Failed runs or empty results</span>
+            <b>Free</b>
+          </div>
         </div>
       </section>
     </>

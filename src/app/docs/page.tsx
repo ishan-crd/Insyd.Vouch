@@ -10,7 +10,17 @@ export const metadata: Metadata = {
 const BASE = "https://api.vouch.dev";
 
 type Param = [name: string, type: string, desc: string];
-type Endpoint = { id: string; method: "GET" | "POST" | "DELETE"; path: string; title: string; desc: string; params?: Param[]; query?: Param[]; req: string; res: string };
+type Endpoint = {
+  id: string;
+  method: "GET" | "POST" | "DELETE";
+  path: string;
+  title: string;
+  desc: string;
+  params?: Param[];
+  query?: Param[];
+  req: string;
+  res: string;
+};
 
 const ENDPOINTS: Endpoint[] = [
   {
@@ -168,9 +178,13 @@ export default function DocsPage() {
   return (
     <div className="docs">
       <header className="docs-top">
-        <Link href="/"><Logo /></Link>
+        <Link href="/">
+          <Logo />
+        </Link>
         <span className="docs-tag">API reference</span>
-        <Link href="/dashboard/api-keys" className="btn btn-primary btn-sm docs-cta">Get an API key</Link>
+        <Link href="/dashboard/api-keys" className="btn btn-primary btn-sm docs-cta">
+          Get an API key
+        </Link>
       </header>
       <div className="docs-body">
         <nav className="docs-toc">
@@ -179,7 +193,10 @@ export default function DocsPage() {
           <a href="#errors">Errors</a>
           <div className="docs-toc-sep">Endpoints</div>
           {ENDPOINTS.map((e) => (
-            <a key={e.id} href={`#${e.id}`}><span className={`m m-${e.method.toLowerCase()}`}>{e.method === "DELETE" ? "DEL" : e.method}</span>{e.path}</a>
+            <a key={e.id} href={`#${e.id}`}>
+              <span className={`m m-${e.method.toLowerCase()}`}>{e.method === "DELETE" ? "DEL" : e.method}</span>
+              {e.path}
+            </a>
           ))}
           <div className="docs-toc-sep">Reference</div>
           <a href="#fields">Response fields</a>
@@ -190,14 +207,20 @@ export default function DocsPage() {
           <section id="intro">
             <h1>Vouch API</h1>
             <p className="lede">
-              One REST API to pull every metric for public Instagram posts, reels and profiles, and to re-check posts every two hours.
-              Base URL: <code>{BASE}</code>. Everything is JSON over HTTPS.
+              One REST API to pull every metric for public Instagram posts, reels and profiles, and to re-check posts every two hours. Base
+              URL: <code>{BASE}</code>. Everything is JSON over HTTPS.
             </p>
           </section>
 
           <section id="auth">
             <h2>Authentication</h2>
-            <p>Create a key under <Link href="/dashboard/api-keys" className="blue">API keys</Link> and send it on every request:</p>
+            <p>
+              Create a key under{" "}
+              <Link href="/dashboard/api-keys" className="blue">
+                API keys
+              </Link>{" "}
+              and send it on every request:
+            </p>
             <pre className="code-block docs-code">{`Authorization: Bearer vch_live_…`}</pre>
             <p>Keys carry full access to your account. Keep them server-side and rotate them from the console.</p>
           </section>
@@ -208,35 +231,61 @@ export default function DocsPage() {
             <pre className="code-block docs-code">{`{ "error": { "code": "invalid_input", "message": "Not a valid Instagram URL or username: …" } }`}</pre>
             <table className="table docs-table">
               <tbody>
-                <tr><td className="mono-sm">400 invalid_input</td><td>The body or query failed validation.</td></tr>
-                <tr><td className="mono-sm">401 unauthorized</td><td>Missing, wrong or revoked key.</td></tr>
-                <tr><td className="mono-sm">404 not_found</td><td>No such run or tracked post on your account.</td></tr>
-                <tr><td className="mono-sm">500 internal_error</td><td>Our fault. Safe to retry.</td></tr>
+                <tr>
+                  <td className="mono-sm">400 invalid_input</td>
+                  <td>The body or query failed validation.</td>
+                </tr>
+                <tr>
+                  <td className="mono-sm">401 unauthorized</td>
+                  <td>Missing, wrong or revoked key.</td>
+                </tr>
+                <tr>
+                  <td className="mono-sm">404 not_found</td>
+                  <td>No such run or tracked post on your account.</td>
+                </tr>
+                <tr>
+                  <td className="mono-sm">500 internal_error</td>
+                  <td>Our fault. Safe to retry.</td>
+                </tr>
               </tbody>
             </table>
           </section>
 
           {ENDPOINTS.map((e) => (
             <section id={e.id} key={e.id} className="docs-ep">
-              <h2><span className={`m m-${e.method.toLowerCase()}`}>{e.method}</span> <code>{e.path}</code></h2>
+              <h2>
+                <span className={`m m-${e.method.toLowerCase()}`}>{e.method}</span> <code>{e.path}</code>
+              </h2>
               <h3>{e.title}</h3>
               <p>{e.desc}</p>
               {e.params && <ParamTable title="Body" rows={e.params} />}
               {e.query && <ParamTable title="Query" rows={e.query} />}
               <div className="docs-pair">
-                <div><small>Request</small><pre className="code-block docs-code">{e.req}</pre></div>
-                <div><small>Response</small><pre className="code-block docs-code">{e.res}</pre></div>
+                <div>
+                  <small>Request</small>
+                  <pre className="code-block docs-code">{e.req}</pre>
+                </div>
+                <div>
+                  <small>Response</small>
+                  <pre className="code-block docs-code">{e.res}</pre>
+                </div>
               </div>
             </section>
           ))}
 
           <section id="fields">
             <h2>Response fields</h2>
-            <p>Each item is the full post object, with the same field names every time. Fields Instagram doesn&apos;t expose for a given post are omitted.</p>
+            <p>
+              Each item is the full post object, with the same field names every time. Fields Instagram doesn&apos;t expose for a given post
+              are omitted.
+            </p>
             <table className="table docs-table">
               <tbody>
                 {FIELDS.map(([f, d]) => (
-                  <tr key={f}><td className="mono-sm">{f}</td><td>{d}</td></tr>
+                  <tr key={f}>
+                    <td className="mono-sm">{f}</td>
+                    <td>{d}</td>
+                  </tr>
                 ))}
               </tbody>
             </table>
@@ -245,9 +294,9 @@ export default function DocsPage() {
           <section id="billing">
             <h2>Billing</h2>
             <p>
-              <b>$4 per 1,000 results.</b> A result is one post returned once. A tracked post costs one result per check, so 12 a day ($0.048).
-              The shares count add-on is +$10 per 1,000. Failed runs and runs that return nothing are free. Every run&apos;s cost is on the run itself
-              and in <code>GET /v1/usage</code>.
+              <b>$4 per 1,000 results.</b> A result is one post returned once. A tracked post costs one result per check, so 12 a day
+              ($0.048). The shares count add-on is +$10 per 1,000. Failed runs and runs that return nothing are free. Every run&apos;s cost
+              is on the run itself and in <code>GET /v1/usage</code>.
             </p>
           </section>
         </article>
@@ -263,7 +312,13 @@ function ParamTable({ title, rows }: { title: string; rows: Param[] }) {
       <table className="table docs-table">
         <tbody>
           {rows.map(([n, t, d]) => (
-            <tr key={n}><td className="mono-sm nowrap"><b>{n}</b></td><td className="mono-sm dim nowrap">{t}</td><td>{d}</td></tr>
+            <tr key={n}>
+              <td className="mono-sm nowrap">
+                <b>{n}</b>
+              </td>
+              <td className="mono-sm dim nowrap">{t}</td>
+              <td>{d}</td>
+            </tr>
           ))}
         </tbody>
       </table>

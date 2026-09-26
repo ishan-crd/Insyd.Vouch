@@ -11,6 +11,7 @@ export function CopyCommand({ command, display }: { command: string; display?: R
       <code className="cmd-text">{display ?? command}</code>
       <span className="caret" aria-hidden />
       <button
+        type="button"
         className="cmd-copy"
         aria-label="Copy command"
         onClick={() => {

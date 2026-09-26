@@ -25,7 +25,9 @@ export default async function SettingsPage() {
       <PageHead title="Settings" sub="Your profile and where Vouch sends events." />
 
       <section className="panel">
-        <div className="panel-head"><h2>Profile</h2></div>
+        <div className="panel-head">
+          <h2>Profile</h2>
+        </div>
         <ProfileForm fullName={p?.full_name ?? ""} company={p?.company ?? ""} email={user.email ?? ""} />
       </section>
 
@@ -45,7 +47,11 @@ export default async function SettingsPage() {
               <div className="secret-row">
                 <span className="muted-sm">Signing secret</span>
                 <code className="secret">{p.webhook_secret}</code>
-                <form action={rotateWebhookSecret}><button className="btn btn-ghost btn-sm">Rotate</button></form>
+                <form action={rotateWebhookSecret}>
+                  <button type="submit" className="btn btn-ghost btn-sm">
+                    Rotate
+                  </button>
+                </form>
               </div>
               <div className="secret-row">
                 <span className="muted-sm">Last delivery</span>
@@ -53,11 +59,17 @@ export default async function SettingsPage() {
                   {last === null || last === undefined ? (
                     "None yet"
                   ) : (
-                    <span className={`badge ${last >= 200 && last < 300 ? "badge-ok" : "badge-bad"}`}>{last === 0 ? "No response" : `HTTP ${last}`}</span>
+                    <span className={`badge ${last >= 200 && last < 300 ? "badge-ok" : "badge-bad"}`}>
+                      {last === 0 ? "No response" : `HTTP ${last}`}
+                    </span>
                   )}{" "}
                   <span className="muted-sm">{relative(p.webhook_last_at)}</span>
                 </span>
-                <form action={sendTestWebhook}><button className="btn btn-ghost btn-sm">Send test event</button></form>
+                <form action={sendTestWebhook}>
+                  <button type="submit" className="btn btn-ghost btn-sm">
+                    Send test event
+                  </button>
+                </form>
               </div>
             </>
           )}

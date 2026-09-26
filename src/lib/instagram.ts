@@ -1,6 +1,4 @@
-export type Target =
-  | { kind: "post"; shortCode: string; url: string }
-  | { kind: "profile"; username: string; url: string };
+export type Target = { kind: "post"; shortCode: string; url: string } | { kind: "profile"; username: string; url: string };
 
 const POST_RE = /instagram\.com\/(?:[\w.]+\/)?(reel|reels|p|tv)\/([\w-]+)/i;
 const PROFILE_RE = /instagram\.com\/([\w.]+)\/?(?:\?.*)?$/i;

@@ -71,7 +71,10 @@ export async function setTracking(id: string, status: "active" | "ended") {
 
 export async function createApiKey(_: unknown, form: FormData): Promise<{ key?: string; error?: string }> {
   const user = await requireUser();
-  const name = String(form.get("name") ?? "").trim().slice(0, 60) || "Default key";
+  const name =
+    String(form.get("name") ?? "")
+      .trim()
+      .slice(0, 60) || "Default key";
   const { key, prefix, hash } = generateKey();
   const { error } = await admin().from("api_keys").insert({ user_id: user.id, name, prefix, key_hash: hash });
   if (error) return { error: "Could not create the key." };
@@ -85,13 +88,21 @@ export async function revokeApiKey(id: string) {
   revalidatePath("/dashboard/api-keys");
 }
 
-const PRIVATE_HOST = /^(localhost|.*\.local|.*\.internal|127\.|10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.|169\.254\.|0\.|\[?::1\]?|\[?f[cd][0-9a-f]{2}:)/i;
+const PRIVATE_HOST =
+  /^(localhost|.*\.local|.*\.internal|127\.|10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.|169\.254\.|0\.|\[?::1\]?|\[?f[cd][0-9a-f]{2}:)/i;
 
 export async function updateProfile(_: FormState, form: FormData): Promise<FormState & { saved?: boolean }> {
   const user = await requireUser();
-  const fullName = String(form.get("fullName") ?? "").trim().slice(0, 80);
-  const company = String(form.get("company") ?? "").trim().slice(0, 80);
-  await admin().from("profiles").update({ full_name: fullName || null, company: company || null }).eq("id", user.id);
+  const fullName = String(form.get("fullName") ?? "")
+    .trim()
+    .slice(0, 80);
+  const company = String(form.get("company") ?? "")
+    .trim()
+    .slice(0, 80);
+  await admin()
+    .from("profiles")
+    .update({ full_name: fullName || null, company: company || null })
+    .eq("id", user.id);
   revalidatePath("/dashboard", "layout");
   return { saved: true };
 }

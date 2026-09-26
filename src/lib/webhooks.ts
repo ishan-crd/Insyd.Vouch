@@ -22,7 +22,12 @@ export async function deliver(userId: string, event: WebhookEvent, data: unknown
   try {
     const res = await fetch(p.webhook_url, {
       method: "POST",
-      headers: { "Content-Type": "application/json", "User-Agent": "Vouch-Webhooks/1", "Vouch-Event": event, "Vouch-Signature": `t=${t},v1=${sig}` },
+      headers: {
+        "Content-Type": "application/json",
+        "User-Agent": "Vouch-Webhooks/1",
+        "Vouch-Event": event,
+        "Vouch-Signature": `t=${t},v1=${sig}`,
+      },
       body,
       signal: AbortSignal.timeout(5000),
     });

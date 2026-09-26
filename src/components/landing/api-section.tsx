@@ -1,7 +1,7 @@
 "use client";
 
-import { AnimatePresence, motion } from "motion/react";
 import { Check, Copy } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
 import { Reveal } from "@/components/reveal";
 
@@ -45,17 +45,34 @@ print(res.items[0].video_view_count)`,
 
 function Highlight({ code }: { code: string }) {
   // Tiny tokenizer: strings, numbers, comments and a handful of keywords.
-  const parts = code.split(/("(?:[^"\\]|\\.)*"|'[^']*'|(?<![:\w])\/\/.*|(?<![\w"$])#.*|\b\d+\b|\b(?:import|from|const|await|true|True|print|new)\b)/g);
+  const parts = code.split(
+    /("(?:[^"\\]|\\.)*"|'[^']*'|(?<![:\w])\/\/.*|(?<![\w"$])#.*|\b\d+\b|\b(?:import|from|const|await|true|True|print|new)\b)/g,
+  );
+  const cls = (t: string) =>
+    /^["']/.test(t)
+      ? "tok-s"
+      : /^(\/\/|#)/.test(t)
+        ? "tok-c"
+        : /^\d+$/.test(t)
+          ? "tok-n"
+          : /^(import|from|const|await|true|True|print|new)$/.test(t)
+            ? "tok-k"
+            : undefined;
+  // Tokens are keyed by their character offset in the snippet, which is stable for a given code string.
+  const tokens = parts.reduce<{ t: string; at: number }[]>((acc, t) => {
+    const prev = acc[acc.length - 1];
+    acc.push({ t, at: prev ? prev.at + prev.t.length : 0 });
+    return acc;
+  }, []);
   return (
     <>
-      {parts.map((t, i) => {
-        if (!t) return null;
-        if (/^["']/.test(t)) return <span key={i} className="tok-s">{t}</span>;
-        if (/^(\/\/|#)/.test(t)) return <span key={i} className="tok-c">{t}</span>;
-        if (/^\d+$/.test(t)) return <span key={i} className="tok-n">{t}</span>;
-        if (/^(import|from|const|await|true|True|print|new)$/.test(t)) return <span key={i} className="tok-k">{t}</span>;
-        return <span key={i}>{t}</span>;
-      })}
+      {tokens.map(({ t, at }) =>
+        t ? (
+          <span key={at} className={cls(t)}>
+            {t}
+          </span>
+        ) : null,
+      )}
     </>
   );
 }
@@ -97,8 +114,8 @@ export function ApiSection() {
             An API you can read <span className="serif">in one sitting.</span>
           </h2>
           <p className="lede">
-            REST, JSON, bearer tokens. The response carries every field Instagram exposes for a post, in the exact same shape
-            whether you fetch once or track forever.
+            REST, JSON, bearer tokens. The response carries every field Instagram exposes for a post, in the exact same shape whether you
+            fetch once or track forever.
           </p>
           <ul className="endpoints">
             {ENDPOINTS.map((e) => (
@@ -115,12 +132,15 @@ export function ApiSection() {
           <div className="terminal">
             <div className="window-bar api-tabs">
               {Object.keys(SAMPLES).map((k) => (
-                <button key={k} className={tab === k ? "on" : ""} onClick={() => setTab(k)}>
+                <button type="button" key={k} className={tab === k ? "on" : ""} onClick={() => setTab(k)}>
                   {k}
-                  {tab === k && <motion.span layoutId="tab-pill" className="tab-pill" transition={{ type: "spring", bounce: 0.2, duration: 0.5 }} />}
+                  {tab === k && (
+                    <motion.span layoutId="tab-pill" className="tab-pill" transition={{ type: "spring", bounce: 0.2, duration: 0.5 }} />
+                  )}
                 </button>
               ))}
               <button
+                type="button"
                 className="api-copy-btn"
                 aria-label="Copy code"
                 onClick={() => {

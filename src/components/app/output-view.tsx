@@ -3,6 +3,7 @@
 import { ExternalLink, Play } from "lucide-react";
 import { useMemo, useState } from "react";
 import { img } from "@/lib/format";
+import { ProxiedImg } from "./proxied-img";
 
 type Item = Record<string, unknown>;
 
@@ -30,10 +31,7 @@ function Cell({ k, v }: { k: string; v: unknown }) {
   if (v === undefined || v === null || v === "") return <span className="dim">undefined</span>;
   if (k === "displayUrl") {
     const src = img(v);
-    return src ? (
-      // eslint-disable-next-line @next/next/no-img-element
-      <img src={src} alt="" className="thumb" loading="lazy" />
-    ) : null;
+    return src ? <ProxiedImg src={src} className="thumb" /> : null;
   }
   if (k === "url" || k === "inputUrl" || k === "videoUrl") {
     return (
@@ -53,15 +51,18 @@ export function OutputView({ items, total, exportBase }: { items: Item[]; total:
   const [mode, setMode] = useState<"overview" | "all">("overview");
   const [view, setView] = useState<"table" | "json">("table");
 
+  const rows = useMemo(() => items.map((item, n) => ({ item, n: n + 1, key: `${n}:${String(item.id ?? item.shortCode ?? "")}` })), [items]);
+
   const columns = useMemo(() => {
     if (mode === "overview") return OVERVIEW.filter((c) => c.key !== "sharesCount" || items.some((i) => i.sharesCount !== undefined));
     const keys: string[] = [];
     const seen = new Set<string>();
-    for (const i of items) for (const k of Object.keys(i)) {
-      if (seen.has(k)) continue;
-      seen.add(k);
-      keys.push(k);
-    }
+    for (const i of items)
+      for (const k of Object.keys(i)) {
+        if (seen.has(k)) continue;
+        seen.add(k);
+        keys.push(k);
+      }
     return keys.map((k) => ({ key: k, label: k, sub: "" }));
   }, [mode, items]);
 
@@ -69,25 +70,41 @@ export function OutputView({ items, total, exportBase }: { items: Item[]; total:
     <div className="output">
       <div className="output-bar">
         <div className="seg">
-          <button type="button" className={mode === "overview" ? "on" : ""} onClick={() => setMode("overview")}>Overview</button>
-          <button type="button" className={mode === "all" ? "on" : ""} onClick={() => setMode("all")}>All fields</button>
+          <button type="button" className={mode === "overview" ? "on" : ""} onClick={() => setMode("overview")}>
+            Overview
+          </button>
+          <button type="button" className={mode === "all" ? "on" : ""} onClick={() => setMode("all")}>
+            All fields
+          </button>
         </div>
         <div className="output-actions">
           <div className="seg">
-            <button type="button" className={view === "table" ? "on" : ""} onClick={() => setView("table")}>Table</button>
-            <button type="button" className={view === "json" ? "on" : ""} onClick={() => setView("json")}>JSON</button>
+            <button type="button" className={view === "table" ? "on" : ""} onClick={() => setView("table")}>
+              Table
+            </button>
+            <button type="button" className={view === "json" ? "on" : ""} onClick={() => setView("json")}>
+              JSON
+            </button>
           </div>
-          <a className="btn btn-ghost btn-sm" href={`${exportBase}?format=csv`}>Export CSV</a>
-          <a className="btn btn-primary btn-sm" href={`${exportBase}?format=json`}>Export JSON</a>
+          <a className="btn btn-ghost btn-sm" href={`${exportBase}?format=csv`}>
+            Export CSV
+          </a>
+          <a className="btn btn-primary btn-sm" href={`${exportBase}?format=json`}>
+            Export JSON
+          </a>
         </div>
       </div>
 
       {total > items.length && (
-        <p className="muted-sm output-note">Showing the first {items.length.toLocaleString()} of {total.toLocaleString()} results. Export to get all of them.</p>
+        <p className="muted-sm output-note">
+          Showing the first {items.length.toLocaleString()} of {total.toLocaleString()} results. Export to get all of them.
+        </p>
       )}
 
       {view === "json" ? (
-        <pre className="json-view" data-lenis-prevent>{JSON.stringify(items, null, 2)}</pre>
+        <pre className="json-view" data-lenis-prevent>
+          {JSON.stringify(items, null, 2)}
+        </pre>
       ) : (
         <div className="table-card output-table" data-lenis-prevent>
           <table className="table">
@@ -107,9 +124,9 @@ export function OutputView({ items, total, exportBase }: { items: Item[]; total:
               </tr>
             </thead>
             <tbody>
-              {items.map((item, i) => (
-                <tr key={i}>
-                  <td className="idx">{i + 1}</td>
+              {rows.map(({ item, key, n }) => (
+                <tr key={key}>
+                  <td className="idx">{n}</td>
                   {columns.map((c) => (
                     <td key={c.key} className={c.key === "caption" ? "caption-cell" : undefined}>
                       <Cell k={c.key} v={item[c.key]} />
@@ -128,10 +145,14 @@ export function OutputView({ items, total, exportBase }: { items: Item[]; total:
 export function RunningOutput() {
   return (
     <div className="running">
-      <div className="running-icon"><Play size={18} fill="currentColor" /></div>
+      <div className="running-icon">
+        <Play size={18} fill="currentColor" />
+      </div>
       <h3>Scraping in progress</h3>
       <p>Results appear here as soon as the run finishes. This page refreshes on its own.</p>
-      <div className="running-bar"><span /></div>
+      <div className="running-bar">
+        <span />
+      </div>
     </div>
   );
 }

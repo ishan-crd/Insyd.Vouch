@@ -1,5 +1,6 @@
 import { Activity, Play } from "lucide-react";
 import Link from "next/link";
+import { ProxiedImg } from "@/components/app/proxied-img";
 import { Sparkline } from "@/components/app/sparkline";
 import { TrackForm } from "@/components/app/track-form";
 import { Empty, PageHead, StatusBadge } from "@/components/app/ui";
@@ -19,12 +20,22 @@ export default async function TrackedPage({ searchParams }: PageProps<"/dashboar
   const ids = (posts ?? []).map((p) => p.id);
   const since = hoursAgo(48);
   const { data: snaps } = ids.length
-    ? await db.from("snapshots").select("tracked_post_id, views, likes, taken_at").in("tracked_post_id", ids).gte("taken_at", since).order("taken_at").limit(10_000)
+    ? await db
+        .from("snapshots")
+        .select("tracked_post_id, views, likes, taken_at")
+        .in("tracked_post_id", ids)
+        .gte("taken_at", since)
+        .order("taken_at")
+        .limit(10_000)
     : { data: [] };
   const series = new Map<string, (number | null)[]>();
   for (const s of snaps ?? []) series.set(s.tracked_post_id, [...(series.get(s.tracked_post_id) ?? []), s.views ?? s.likes]);
 
-  const { count: activeCount } = await db.from("tracked_posts").select("id", { count: "exact", head: true }).eq("user_id", user.id).eq("status", "active");
+  const { count: activeCount } = await db
+    .from("tracked_posts")
+    .select("id", { count: "exact", head: true })
+    .eq("user_id", user.id)
+    .eq("status", "active");
 
   return (
     <>
@@ -36,8 +47,12 @@ export default async function TrackedPage({ searchParams }: PageProps<"/dashboar
 
       <div className="toolbar">
         <div className="seg">
-          <Link href="/dashboard/tracked" className={show === "active" ? "on" : ""}>Active</Link>
-          <Link href="/dashboard/tracked?show=all" className={show === "all" ? "on" : ""}>All</Link>
+          <Link href="/dashboard/tracked" className={show === "active" ? "on" : ""}>
+            Active
+          </Link>
+          <Link href="/dashboard/tracked?show=all" className={show === "all" ? "on" : ""}>
+            All
+          </Link>
         </div>
       </div>
 
@@ -69,10 +84,11 @@ export default async function TrackedPage({ searchParams }: PageProps<"/dashboar
                     <td>
                       <Link href={`/dashboard/tracked/${p.id}`} className="post-cell">
                         {thumb ? (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img src={thumb} alt="" className="thumb sm" loading="lazy" />
+                          <ProxiedImg src={thumb} className="thumb sm" />
                         ) : (
-                          <span className="thumb sm thumb-ph"><Play size={11} fill="#fff" stroke="none" /></span>
+                          <span className="thumb sm thumb-ph">
+                            <Play size={11} fill="#fff" stroke="none" />
+                          </span>
                         )}
                         <span className="post-cell-text">
                           <b>{p.owner_username ? `@${p.owner_username}` : p.short_code}</b>
@@ -84,10 +100,14 @@ export default async function TrackedPage({ searchParams }: PageProps<"/dashboar
                     <td className="r num">{compact(p.likes)}</td>
                     <td className="r num">{compact(p.comments)}</td>
                     <td className="r num">{p.include_shares ? compact(p.shares) : <span className="dim">off</span>}</td>
-                    <td><Sparkline values={series.get(p.id) ?? []} /></td>
+                    <td>
+                      <Sparkline values={series.get(p.id) ?? []} />
+                    </td>
                     <td className="nowrap muted-sm">{relative(p.last_checked_at)}</td>
                     <td className="nowrap muted-sm">{p.status === "active" ? relative(p.next_check_at) : "—"}</td>
-                    <td><StatusBadge status={p.status} /></td>
+                    <td>
+                      <StatusBadge status={p.status} />
+                    </td>
                   </tr>
                 );
               })}

@@ -25,8 +25,8 @@ export function Hero() {
         </h1>
         <Rise delay={550}>
           <p className="lede hero-lede">
-            Paste any Instagram post or reel link. Vouch pulls its full metrics, re-checks them every two hours, and hands
-            you the history through one clean API and a dashboard your team will actually open.
+            Paste any Instagram post or reel link. Vouch pulls its full metrics, re-checks them every two hours, and hands you the history
+            through one clean API and a dashboard your team will actually open.
           </p>
         </Rise>
         <Rise delay={680} className="hero-ctas">
@@ -48,7 +48,9 @@ export function Hero() {
           />
         </Rise>
         <Rise delay={900} className="hero-meta">
-          <span><ShieldCheck size={15} /> $4 per 1,000 results</span>
+          <span>
+            <ShieldCheck size={15} /> $4 per 1,000 results
+          </span>
           <span>No Instagram login needed</span>
           <span>30+ fields per post</span>
         </Rise>

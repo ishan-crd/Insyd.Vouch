@@ -12,7 +12,10 @@ export function Logo() {
     <span style={{ display: "inline-flex", alignItems: "center", gap: 10 }}>
       <LogoMark />
       <span style={{ fontSize: 21, fontWeight: 700, letterSpacing: "-0.04em" }}>
-        vouch <span className="serif" style={{ fontWeight: 400, color: "var(--muted)", fontSize: 19 }}>by Insyd</span>
+        vouch{" "}
+        <span className="serif" style={{ fontWeight: 400, color: "var(--muted)", fontSize: 19 }}>
+          by Insyd
+        </span>
       </span>
     </span>
   );

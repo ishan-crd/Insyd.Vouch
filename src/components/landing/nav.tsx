@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { Logo } from "@/components/logo";
 
 const LINKS = [
@@ -21,10 +21,12 @@ export function Nav() {
       setScrolled(window.scrollY > 16);
       // Flip to dark glass while a navy section sits under the bar.
       const under = document.querySelectorAll<HTMLElement>("[data-nav-dark]");
-      setDark([...under].some((el) => {
-        const r = el.getBoundingClientRect();
-        return r.top <= 32 && r.bottom >= 32;
-      }));
+      setDark(
+        [...under].some((el) => {
+          const r = el.getBoundingClientRect();
+          return r.top <= 32 && r.bottom >= 32;
+        }),
+      );
     };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });

@@ -6,7 +6,13 @@ const ACTOR = "apify~instagram-reel-scraper";
 const BASE = "https://api.apify.com/v2";
 
 export type UpstreamStatus = "READY" | "RUNNING" | "SUCCEEDED" | "FAILED" | "ABORTING" | "ABORTED" | "TIMING-OUT" | "TIMED-OUT";
-export type UpstreamRun = { id: string; status: UpstreamStatus; statusMessage?: string; defaultDatasetId: string; finishedAt?: string | null };
+export type UpstreamRun = {
+  id: string;
+  status: UpstreamStatus;
+  statusMessage?: string;
+  defaultDatasetId: string;
+  finishedAt?: string | null;
+};
 
 export type UpstreamInput = {
   username: string[];
@@ -57,7 +63,9 @@ export async function getUpstreamItems(datasetId: string): Promise<Record<string
   const items: Record<string, unknown>[] = [];
   const limit = 1000;
   for (let offset = 0; ; offset += limit) {
-    const page = await call<Record<string, unknown>[]>(`/datasets/${datasetId}/items?clean=true&format=json&limit=${limit}&offset=${offset}`);
+    const page = await call<Record<string, unknown>[]>(
+      `/datasets/${datasetId}/items?clean=true&format=json&limit=${limit}&offset=${offset}`,
+    );
     items.push(...page);
     if (page.length < limit) return items;
   }
