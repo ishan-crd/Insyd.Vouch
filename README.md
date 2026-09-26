@@ -1,36 +1,40 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Vouch
 
-## Getting Started
+Instagram post & reel metrics as an API. Customers paste links (or call `POST /v1/scrape`), Vouch pulls every field,
+optionally re-checks tracked posts every 2 hours, and bills **$4 per 1,000 results**.
 
-First, run the development server:
+Next.js 16 (App Router) · Supabase (Auth + Postgres) · upstream scraper: Apify `instagram-reel-scraper`.
+
+## Setup
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm install
+cp .env.example .env.local   # fill in the values below
+pnpm dev --port 3100
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+| Variable | Where it comes from |
+|---|---|
+| `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Supabase → Project settings → API keys |
+| `SUPABASE_SECRET_KEY` | Supabase → API keys → Secret key (`sb_secret_…`). Server only. |
+| `APIFY_TOKEN` | Apify console → Settings → API & Integrations |
+| `NEXT_PUBLIC_APP_URL` | Public URL of the app. Used for auth redirects and upstream webhooks (skipped on localhost). |
+| `WEBHOOK_SECRET`, `CRON_SECRET` | Any long random strings |
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Database schema lives in `supabase/migrations/` (already applied to the linked project).
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## How it works
 
-## Learn More
+- **jobs** = one upstream scraper run. **runs** = what a customer sees and pays for. A one-off scrape is one job → one run.
+  The tracking scheduler batches every due post across all customers into one job, then gives each customer their own run,
+  so the upstream per-run start fee is paid once per cycle.
+- A job finishes via the upstream webhook (`/api/webhooks/upstream`), or is swept by the scheduler, or is refreshed when a
+  customer views the run or polls the API. `processJob` claims the job atomically, stores items in `run_items`, bills the run,
+  writes `snapshots` for tracked posts, and fires customer webhooks.
+- **Scheduler**: `GET /api/cron/tick` (Bearer `CRON_SECRET`) every 10 min via `vercel.json`. Sub-daily crons need Vercel Pro;
+  on Hobby, point any external cron (or Supabase `pg_cron` + `pg_net`) at the same URL.
+- Public API is served at `/v1/*` (rewritten to `/api/v1/*`). Reference: `/docs`.
 
-To learn more about Next.js, take a look at the following resources:
+## Pricing knobs
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+`src/lib/pricing.ts`: `PRICE_PER_1K_RESULTS` (4), `SHARES_ADDON_PER_1K` (10), `TRACK_INTERVAL_MINUTES` (120).
