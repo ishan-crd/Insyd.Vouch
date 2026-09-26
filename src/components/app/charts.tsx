@@ -9,7 +9,8 @@ function niceMax(v: number) {
   if (v <= 0) return 1;
   const p = Math.pow(10, Math.floor(Math.log10(v)));
   const n = v / p;
-  return (n <= 1 ? 1 : n <= 2 ? 2 : n <= 2.5 ? 2.5 : n <= 5 ? 5 : 10) * p;
+  const step = [1, 1.2, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10].find((x) => n <= x) ?? 10;
+  return step * p;
 }
 
 const short = (n: number) => Intl.NumberFormat("en-US", { notation: "compact", maximumFractionDigits: 1 }).format(n);
@@ -96,7 +97,9 @@ export function LineChart({ points, label, height = 260, fmtTime }: { points: Po
 }
 
 /** Single-series vertical bars with a per-bar tooltip. */
-export function BarChart({ bars, label, height = 220, format = (v: number) => v.toLocaleString("en-US") }: { bars: { label: string; v: number }[]; label: string; height?: number; format?: (v: number) => string }) {
+export function BarChart({ bars, label, height = 220, unit = "count" }: { bars: { label: string; v: number }[]; label: string; height?: number; unit?: "count" | "usd" }) {
+  const format = (v: number) =>
+    unit === "usd" ? v.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: v && v < 1 ? 3 : 2 }) : v.toLocaleString("en-US");
   const [hover, setHover] = useState<number | null>(null);
   const H = height, L = 44, R = 8, T = 12, B = 26;
   const max = niceMax(Math.max(...bars.map((b) => b.v), 0));

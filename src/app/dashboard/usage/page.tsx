@@ -37,7 +37,7 @@ export default async function UsagePage() {
       <section className="panel">
         <div className="panel-head"><h2>Daily spend</h2><span className="muted-sm">Last 30 days</span></div>
         <div className="panel-body">
-          <BarChart label="Spend" bars={days.map((d) => ({ label: d.label, v: Math.round(d.cost * 100) / 100 }))} format={(v) => usd(v)} />
+          <BarChart label="Spend" bars={days.map((d) => ({ label: d.label, v: Math.round(d.cost * 100) / 100 }))} unit="usd" />
         </div>
       </section>
 

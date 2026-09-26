@@ -42,7 +42,7 @@ export default async function RunPage({ params, searchParams }: PageProps<"/dash
           <div className="run-meta">
             <span className={`run-status run-status-${statusCls}`}>
               <StatusBadge status={run.status} />
-              {run.status_message ?? (running ? "Scraping Instagram…" : "")}
+              {running ? "Scraping Instagram…" : (run.status_message ?? "").replace(/^Succeeded with /, "")}
             </span>
             <span><b>{usd(Number(run.cost_usd))}</b></span>
             <span>{dateTime(run.started_at)}</span>
